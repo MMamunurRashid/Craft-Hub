@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import signUpBenner from '../../../assets/signUp.jpg'
+import { AuthContext } from "../../../Contexts/AuthProvider";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
+  const {  createUser, updateUser } = useContext(AuthContext);
+
+  const [signupError, setSignupError] = useState("");
+  const [createdUserEmail, setCreatedUserEmail] = useState("");
 
   const {
     register,
@@ -17,10 +23,9 @@ const Register = () => {
   //add new user
   const imgbbKey = "18a8d0f77a7a7c4643e1e64714b6915a";
   const handleSignup = (data) => {
-    const skills = JSON.stringify(data.skills);
-
-    console.log(data.skills);
-    console.log("skills: ", skills);
+    const name = data.name;
+    const email = data.email;
+    
     const { password, retypePassword } = data;
 
     if (password !== retypePassword) {
@@ -50,59 +55,53 @@ const Register = () => {
               email: data.email,
               name: data.name,
               mobileNumber: data.mobileNumber,
-              dateOfBirth: data.dateOfBirth,
-              presentAddress: data.presentAddress,
-              parmanentAddress: data.parmanentAddress,
               password: data.password,
-              skills: skills,
+             
             };
             console.log(userDetails);
-            // save  information to the database
-            fetch("http://localhost:5000/users", {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-              },
-              body: JSON.stringify(userDetails),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.error) {
-                  Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title:
-                      "This Mobile Number is already registered. Please try to login",
-                    showConfirmButton: false,
-                    timer: 1000,
-                  });
-                }
-                if (data.message) {
-                  Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Your registration successfull",
-                    showConfirmButton: false,
-                    timer: 1000,
-                  });
-                  navigate("/login");
-                }
-
-                if (!data.message && !data.error) {
-                  Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: `something is wrong`,
-                    showConfirmButton: false,
-                    timer: 1000,
-                  });
-                }
-              });
+            setSignupError("");
+    createUser(email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        
+        const userInfo = {
+          displayName: data.name,
+          photoURL:imgData.data.url,
+          phoneNumber:data.mobileNumber,
+        };
+        updateUser(userInfo)
+          .then(() => {
+            saveUserInDb(userDetails);
+            setCreatedUserEmail(email);
+            toast.success("Your Registration Successful!!");
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => {
+        //console.log(err);
+        setSignupError(err.message);
+        toast.error(`${err.message}`);
+      });
           }
         });
     }
   };
-
+  // save user to DB
+  const saveUserInDb = (userDetails) => {
+    
+    fetch(`http://localhost:5000/users`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(userDetails),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        toast.success("User information saved in database");
+      });
+  };
   return (
       <div className="py-10 min-h-screen">
         <div className="flex">
@@ -220,6 +219,7 @@ const Register = () => {
                 type="submit"
               />
             </div>
+            {signupError && <p className="text-red-600">{signupError}</p>}
           </form>
           <p className="text-center mt-5">
             Already have an account?
