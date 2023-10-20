@@ -1,0 +1,20 @@
+.NotoSerif {
+    font-family: "Noto Serif", serif;
+  }
+  .JosefinSans {
+    font-family: "Josefin Sans", sans-serif;
+  }
+  .PtSerif {
+    font-family: "PT Serif", serif;
+  }
+  .Pacifico {
+    font-family: "Pacifico", cursive;
+  }
+  .CrimsonText {
+    font-family: "Crimson Text", serif;
+  }
+  
+  @import url("https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap");
+  .BerkshireSwash {
+    font-family: "Berkshire Swash", cursive;
+  }

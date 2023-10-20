@@ -1,0 +1,54 @@
+{
+    "categories": [
+      {
+        "id": 1,
+        "name": "Painting",
+        "image": "https://i.ibb.co/NTgn2tS/painting.jpg"
+      },
+      {
+        "id": 2,
+        "name": "Hand made Jewellery",
+        "image": "https://i.ibb.co/1JCvFZ5/hand-made-jewellery.jpg"
+      },
+      {
+        "id": 3,
+        "name": "Pottery ",
+        "image": "https://i.ibb.co/qmjDdmb/blog-6.jpg"
+      },
+      {
+        "id": 4,
+        "name": "Paper Crafts",
+        "image": "https://i.ibb.co/pLpWsym/paper-craft.png"
+      },
+      {
+        "id": 5,
+        "name": "Textile and Fiber Arts",
+        "image": "https://i.ibb.co/rQtC7vw/Ck-It-Out-Home-Pg-Macrame-project.jpg"
+      },
+      {
+        "id": 6,
+        "name": "Micro Art",
+        "image": "https://i.ibb.co/fqZwMsN/microart.jpg"
+      }
+      ,
+      {
+        "id": 7,
+        "name": "Wood Craft",
+        "image": "https://i.ibb.co/Hqcm6BZ/wood-craft.jpg"
+      }
+      ,
+      {
+        "id": 8,
+        "name": "Glass Craft",
+        "image": "https://i.ibb.co/QKYMKhB/glass-craft.jpg"
+      }
+      ,
+      {
+        "id": 9,
+        "name": "Leatherworking",
+        "image": "https://i.ibb.co/0G6Km7r/leather-craft.jpg"
+      }
+     
+    ]
+  }
+  

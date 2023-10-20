@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import loginBenner from "../../../assets/login.jpg";
+import { AuthContext } from "../../../Contexts/AuthProvider";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn } = useContext(AuthContext);
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+  const [loginError, setLoginError] = useState("");
 
   const {
     register,
@@ -16,41 +23,22 @@ const Login = () => {
   } = useForm();
 
   const handleLogin = (data) => {
-    const userInfo = {
-      mobileNumber: data.mobileNumber,
-      password: data.password,
-    };
-
-    fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userInfo),
-      credentials: "include", // Include credentials in the request
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === "Login successful") {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Your login was successful",
-            showConfirmButton: false,
-            timer: 1000,
-          });
-          navigate("/");
-        } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Invalid mobile number or password",
-            showConfirmButton: false,
-            timer: 1000,
-          });
-        }
+    // console.log(data);
+    console.log(data.email);
+    setLoginError("");
+    signIn(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        
+        toast.success("Login Successful");
+        //console.log(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoginError(err.message);
       });
   };
+
 
   return (
     <div className="py-10 min-h-screen">
@@ -62,23 +50,22 @@ const Login = () => {
         <div className="p-7 mr-20">
           <h2 className="text-xl sm:text-5xl text-center">Login</h2>
           <form onSubmit={handleSubmit(handleLogin)}>
-            <div className="form-control md:w-[500px] ">
-              <label className="label">
-                <span className="label-text">Mobile Number</span>
-              </label>
-              <input
-                type="tel"
-                placeholder="Enter your mobile here"
-                {...register("mobileNumber", {
-                  required: true,
-                })}
-                required
-                className="input input-bordered input-xl md:w-[500px]"
-              />
-              {errors.mobileNumber && (
-                <p className="text-red-600">{errors.mobileNumber?.message}</p>
-              )}
-            </div>
+          <div className="form-control w-full max-w-xs bg-slate-100">
+            <label className="label">
+              <span className="label-text">Email</span>
+            </label>
+            <input
+              type="email"
+              {...register("email", {
+                required: "Email Address is required",
+              })}
+              required
+              className="input input-bordered input-xl md:w-[500px]"
+            />
+            {errors.email && (
+              <p className="text-red-600">{errors.email?.message}</p>
+            )}
+          </div>
             <div className="form-control md:w-[500px]">
               <label className="label">
                 {" "}

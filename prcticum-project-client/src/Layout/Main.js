@@ -1,12 +1,14 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from '../Shared/Sidebar/Sidebar'
+import Navbar from '../Shared/Navbar/Navbar';
 
 const Main = () => {
     return (
-        <div className='flex'>
-            <Sidebar/>
+        <div className=''>
+            <Navbar/>
+            <div className='pt-20'>
             <Outlet></Outlet>
+            </div>
          
         </div>
     );
