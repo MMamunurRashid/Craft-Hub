@@ -1,0 +1,134 @@
+[
+    {
+        "productId": 1,
+        "productName": "Oil Painting Color",
+        "productImage": "https://i.ibb.co/sQ6pq7Z/oil-painting-color.jpg",
+        "productPrice": 590,
+        "productCategory": "Painting",
+        "rating": 4.5,
+        "status": "In Stock",
+        "availableQuantity": 100,
+        "saleQuantity": 50
+      },
+    {
+        "productId": 2,
+        "productName": "Oil Painting Brush",
+        "productImage": "https://i.ibb.co/10C69B0/oil-painting-brush.jpg",
+        "productPrice": 300,
+        "productCategory": "Painting",
+        "rating": 4.0,
+        "status": "In Stock",
+        "availableQuantity": 100,
+        "saleQuantity": 50
+      },
+      {
+        "productId": 3,
+        "productName": "HandMade Jewellery - 1",
+        "productImage": "https://i.ibb.co/KybdFpw/handmade-jewellery.jpg",
+        "productPrice": 599,
+        "productCategory": "Hand made Jewellery",
+        "rating": 4.0,
+        "status": "In Stock",
+        "availableQuantity": 50,
+        "saleQuantity": 100
+      },
+      {
+        "productId": 4,
+        "productName": "Matir Basun Combo",
+        "productImage": "https://i.ibb.co/kxb9zXx/Matir-Basun-combo.png",
+        "productPrice": 1199,
+        "productCategory": "Pottery",
+        "rating": 4.8,
+        "status": "In Stock",
+        "availableQuantity": 75,
+        "saleQuantity": 25
+      },
+      {
+        "productId": 5,
+        "productName": "Gift Card-1",
+        "productImage": "https://i.ibb.co/3yxp3Qs/gift-card.jpg",
+        "productPrice": 199,
+        "productCategory": "Paper Crafts",
+        "rating": 4.5,
+        "status": "In Stock",
+        "availableQuantity": 150,
+        "saleQuantity": 50
+      },
+      {
+        "productId": 6,
+        "productName": "Ladies Febric Bag",
+        "productImage": "https://i.ibb.co/9tMYSPJ/Ladies-Febric-bag.jpg",
+        "productPrice": 499,
+        "productCategory": "Textile and Fiber Arts",
+        "rating": 4.2,
+        "status": "In Stock",
+        "availableQuantity": 60,
+        "saleQuantity": 40
+      },
+      {
+        "productId": 7,
+        "productName": "Micro ARt Product-1",
+        "productImage": "https://i.ibb.co/vwKx5L8/micro-art-product-1.jpg",
+        "productPrice": 299,
+        "productCategory": "Micro Art",
+        "rating": 4.7,
+        "status": "In Stock",
+        "availableQuantity": 80,
+        "saleQuantity": 20
+      },
+      {
+        "productId": 8,
+        "productName": "Wood Glass-1",
+        "productImage": "https://i.ibb.co/BTfDsFz/wood-glass.jpg",
+        "productPrice": 199,
+        "productCategory": "Wood Craft",
+        "rating": 4.3,
+        "status": "In Stock",
+        "availableQuantity": 90,
+        "saleQuantity": 10
+      },
+      {
+        "productId": 9,
+        "productName": "RGB Light with Glass-1",
+        "productImage": "https://i.ibb.co/b26SdqN/light-glass-2.jpg",
+        "productPrice": 28.99,
+        "productCategory": "Glass Craft",
+        "rating": 3.9,
+        "status": "In Stock",
+        "availableQuantity": 70,
+        "saleQuantity": 30
+      },
+      {
+        "productId": 10,
+        "productName": "RGB Light with Glass-2",
+        "productImage": "https://i.ibb.co/849bkTH/light-glass.jpg",
+        "productPrice": 28.99,
+        "productCategory": "Glass Craft",
+        "rating": 3.9,
+        "status": "In Stock",
+        "availableQuantity": 70,
+        "saleQuantity": 30
+      },
+      {
+        "productId": 11,
+        "productName": "Leather Wallet",
+        "productImage": "https://i.ibb.co/xjmvGfd/leather-wallet.webp",
+        "productPrice": 399,
+        "productCategory": "Leather Craft",
+        "rating": 4.4,
+        "status": "In Stock",
+        "availableQuantity": 120,
+        "saleQuantity": 80
+      },
+      {
+        "productId": 12,
+        "productName": "Hand Made Jute wallmate",
+        "productImage": "https://i.ibb.co/k3kbvh0/jute-craft.jpg",
+        "productPrice": 599,
+        "productCategory": "Jute craft",
+        "rating": 4.4,
+        "status": "In Stock",
+        "availableQuantity": 20,
+        "saleQuantity": 80
+      }
+]

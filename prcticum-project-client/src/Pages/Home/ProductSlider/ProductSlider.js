@@ -7,6 +7,9 @@ import img2 from '../../../assets/art-of-colors-e1614735388680.jpg';
 import img3 from '../../../assets/markus-spiske-QRrZzqLTWig-unsplash-1024x683.jpg';
 
 const ProductSlider = () => {
+
+  
+
     const responsive = {
         superLargeDesktop: {
           // the naming can be any, depends on you.
@@ -27,7 +30,12 @@ const ProductSlider = () => {
         }
       };
   return (
-    <Carousel responsive={responsive}   swipeable={true}
+    <div className="my-16">
+      <h1 className="text-center text-xl md:text-3xl BerkshireSwash mb-8">
+        Best Selling Product
+      </h1>
+
+      <Carousel responsive={responsive}   swipeable={true}
     draggable={true}
     showDots={true}
    
@@ -87,6 +95,7 @@ const ProductSlider = () => {
     
  
   </Carousel>
+    </div>
   );
 };
 

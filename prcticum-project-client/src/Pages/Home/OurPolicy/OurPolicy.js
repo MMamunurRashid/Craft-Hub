@@ -6,11 +6,11 @@ import { PiWechatLogoFill } from "react-icons/pi";
 
 const OurPolicy = () => {
   return (
-    <div className="">
-      <h1 className="text-center text-xl md:text-2xl BerkshireSwash">
+    <div className="my-16">
+      <h1 className="text-center text-xl md:text-3xl BerkshireSwash">
         Why Choice Us?
       </h1>
-      <div className="py-5 mx-28 ">
+      <div className="pt-5 mx-28 ">
         <div className="flex-wrap md:flex  justify-between">
           <div className="flex items-center">
             <div>

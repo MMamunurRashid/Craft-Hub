@@ -45,8 +45,13 @@
       ,
       {
         "id": 9,
-        "name": "Leatherworking",
+        "name": "Leather Craft",
         "image": "https://i.ibb.co/0G6Km7r/leather-craft.jpg"
+      },
+      {
+        "id": 10,
+        "name": "Jute craft",
+        "image": "https://i.ibb.co/whddmnx/jute-handicrafts-products.jpg"
       }
      
     ]
