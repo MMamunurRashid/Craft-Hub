@@ -11,8 +11,8 @@ const Home = () => {
       <HomeSlider/>
       <OurPolicy />
       <Welcome/>
-      <Category/>
       <ProductSlider/>
+      <Category/>
     </div>
   );
 };
