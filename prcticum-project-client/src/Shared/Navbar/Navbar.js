@@ -15,47 +15,7 @@ const Navbar = () => {
     <div className="fixed  shadow-md max-w-[1440px] bg-slate-200 w-full z-50    md:flex md:justify-between md:items-center md:px-20 px-5 ">
       <div className="navbar  bg-slate-200">
         <div className="navbar-start">
-          <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content dropdown mt-3 z-[1]  shadow bg-base-100 rounded-box w-52 text-xl NotoSerif"
-            >
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-
-              <li>
-                <Link to="/about-foodo">About Us</Link>
-              </li>
-              <li>
-                {user?.email ? (
-                  <Link onClick={handleLogout} className="btn btn-ghost">
-                    Logout
-                  </Link>
-                ) : (
-                  <Link className="btn btn-ghost" to="/login">
-                    Login
-                  </Link>
-                )}
-              </li>
-            </ul>
-          </div>
+         
           <div className="flex items-center">
             <Link
               to="/home"
@@ -65,51 +25,22 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu  menu-horizontal px-1 text-xl NotoSerif">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-
-            <li>
-              <Link to="/about">About Us</Link>
-            </li>
-
-            <li>
-              {user?.email ? (
-                <Link onClick={handleLogout}>Logout</Link>
-              ) : (
-                <Link to="/login">Login</Link>
-              )}
-            </li>
-          </ul>
-        </div>
-        <div className="navbar-end gap-2">
-          <div className="form-control">
+        <div className="navbar-center">
+        <div className="form-control">
             <div className="input-group">
               <input
                 type="text"
                 placeholder="I'm Looking for..."
-                className="input input-bordered"
+                className="input input-bordered w-[500px]"
               />
-              <button className="btn btn-square btn-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+              <button className="btn bg-orange-500 hover:bg-white  hover:border-2 hover:border-orange-500  hover:text-black text-white">
+                Search
               </button>
             </div>
           </div>
+        </div>
+        <div className="navbar-end gap-2">
+          
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
               <div className="indicator">

@@ -32,7 +32,7 @@ const Category = () => {
             <div className=" hover:border-orange-500 border-stone-100 border-[3px] rounded-[10px]">
               <div
                 key={category.id}
-                className="card rounded-lg w-full h-full  "
+                className="card shadow-lg rounded-lg w-full h-full  "
               >
                 <div className="relative">
                   <div className="">
