@@ -19,8 +19,14 @@ const Main = () => {
             <li data-tip="Shop Now" className="tooltip tooltip-right">
               <HiShoppingBag className="h-14 w-14 text-slate-100 hover:text-orange-500" />
             </li>
-            <li data-tip="Cart" className="tooltip tooltip-right">
-                <BsCartCheckFill  className="h-14 w-14 text-stone-100 hover:text-orange-500"/> 
+            <li data-tip="Cart" className="tooltip tooltip-right ">
+            <label tabIndex={0} className="text-slate-100 hover:text-orange-500">
+              <div className="indicator">
+               <BsCartCheckFill className="h-6 w-6 "/>
+                <span className="badge badge-sm indicator-item">0</span>
+              </div>
+            </label>
+            
             </li>
           </ul>
         </div>

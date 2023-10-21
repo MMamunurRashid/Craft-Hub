@@ -6,6 +6,7 @@ import Category from "../Category/Category";
 import Welcome from "../Welcome/Welcome";
 import HomeSlider2 from "../HomeSlider/HomeSlider2";
 import HowDeliveryServiceWork from "../HowDeliveryServiceWork/HowDeliveryServiceWork";
+import ContactUs from "../ContactUs/ContactUs";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <ProductSlider/>
       <Category/>
       <HowDeliveryServiceWork/>
+      <ContactUs/>
     </div>
   );
 };
