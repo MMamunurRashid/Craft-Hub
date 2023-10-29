@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 
 import "../../Font/Font.css";
 import { AuthContext } from "../../Contexts/AuthProvider";
+import { useCart } from "../../Contexts/CartContext";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const { cart } = useCart();
+  const totalPrice = cart.reduce((total, product) => total + product.productPrice, 0);
   const handleLogout = () => {
     logOut()
       .then(() => {})
@@ -18,7 +21,7 @@ const Navbar = () => {
          
           <div className="flex items-center">
             <Link
-              to="/home"
+              to="/"
               className="btn btn-ghost normal-case text-5xl BerkshireSwash font-bold"
             >
               Craft <span className="text-orange-500">Hub</span>
@@ -58,7 +61,7 @@ const Navbar = () => {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="badge badge-sm indicator-item">0</span>
+                <span className="badge badge-sm indicator-item bg-orange-500 text-white">{cart.length}</span>
               </div>
             </label>
             <div
@@ -66,8 +69,8 @@ const Navbar = () => {
               className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
             >
               <div className="card-body">
-                <span className="font-bold text-lg">0 Items</span>
-                <span className="text-info">Subtotal: $0</span>
+                <span className="font-bold text-lg">{cart.length} item</span>
+                <span className="text-info">Subtotal: ৳ {totalPrice}</span>
                 <div className="card-actions">
                   <button className="btn btn-primary btn-block">
                     View cart

@@ -8,7 +8,9 @@
         "rating": 4.5,
         "status": "In Stock",
         "availableQuantity": 100,
-        "saleQuantity": 50
+        "saleQuantity": 50,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
     {
         "productId": 2,
@@ -19,7 +21,9 @@
         "rating": 4.0,
         "status": "In Stock",
         "availableQuantity": 100,
-        "saleQuantity": 50
+        "saleQuantity": 50,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 3,
@@ -30,7 +34,9 @@
         "rating": 4.0,
         "status": "In Stock",
         "availableQuantity": 50,
-        "saleQuantity": 100
+        "saleQuantity": 100,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 4,
@@ -41,7 +47,9 @@
         "rating": 4.8,
         "status": "In Stock",
         "availableQuantity": 75,
-        "saleQuantity": 25
+        "saleQuantity": 25,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 5,
@@ -52,7 +60,9 @@
         "rating": 4.5,
         "status": "In Stock",
         "availableQuantity": 150,
-        "saleQuantity": 50
+        "saleQuantity": 50,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 6,
@@ -63,7 +73,9 @@
         "rating": 4.2,
         "status": "In Stock",
         "availableQuantity": 60,
-        "saleQuantity": 40
+        "saleQuantity": 40,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 7,
@@ -74,7 +86,9 @@
         "rating": 4.7,
         "status": "In Stock",
         "availableQuantity": 80,
-        "saleQuantity": 20
+        "saleQuantity": 20,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 8,
@@ -85,7 +99,9 @@
         "rating": 4.3,
         "status": "In Stock",
         "availableQuantity": 90,
-        "saleQuantity": 10
+        "saleQuantity": 10,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 9,
@@ -96,7 +112,9 @@
         "rating": 3.9,
         "status": "In Stock",
         "availableQuantity": 70,
-        "saleQuantity": 30
+        "saleQuantity": 30,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 10,
@@ -107,7 +125,9 @@
         "rating": 3.9,
         "status": "In Stock",
         "availableQuantity": 70,
-        "saleQuantity": 30
+        "saleQuantity": 30,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 11,
@@ -118,7 +138,9 @@
         "rating": 4.4,
         "status": "In Stock",
         "availableQuantity": 120,
-        "saleQuantity": 80
+        "saleQuantity": 80,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       },
       {
         "productId": 12,
@@ -129,6 +151,8 @@
         "rating": 4.4,
         "status": "In Stock",
         "availableQuantity": 20,
-        "saleQuantity": 80
+        "saleQuantity": 80,
+        "SellerEmail" : "",
+        "ProductBrand" : ""
       }
 ]

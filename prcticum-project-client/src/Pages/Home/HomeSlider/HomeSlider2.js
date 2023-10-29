@@ -26,7 +26,7 @@ const HomeSlider2 = () => {
         // Fetch your local data here
         const response = await fetch("data.json");
         const jsonData = await response.json();
-        console.log(jsonData);
+        // console.log(jsonData);
         setData(jsonData);
       } catch (error) {
         console.error("Error fetching data:", error);

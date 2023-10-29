@@ -5,8 +5,10 @@ import Footer from "../Shared/Footer/Footer";
 import { FaHome } from "react-icons/fa";
 import { HiShoppingBag } from "react-icons/hi";
 import { BsCartCheckFill } from "react-icons/bs";
+import { useCart } from "../Contexts/CartContext";
 
 const Main = () => {
+  const { cart } = useCart();
   return (
     <div className="">
       <Navbar />
@@ -23,7 +25,7 @@ const Main = () => {
             <label tabIndex={0} className="text-slate-100 hover:text-orange-500">
               <div className="indicator">
                <BsCartCheckFill className="h-6 w-6 "/>
-                <span className="badge badge-sm indicator-item">0</span>
+                <span className="badge bg-orange-500 badge-sm indicator-item text-white">{cart.length}</span>
               </div>
             </label>
             
