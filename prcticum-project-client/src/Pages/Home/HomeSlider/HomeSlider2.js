@@ -7,6 +7,8 @@ import img3 from "../../../assets/Your paragraph text (3).png";
 import img4 from "../../../assets/Your paragraph text (4).png";
 import img5 from "../../../assets/Your paragraph text.png";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../../Shared/Loading/Loading";
 
 const HomeSlider2 = () => {
   const images = [
@@ -18,23 +20,20 @@ const HomeSlider2 = () => {
     { img: img5 },
   ];
 
-  const [data, setData] = useState();
+  const {
+    data: categories = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await fetch(`http://localhost:5000/categories`);
+      const data = await res.json();
+      // console.log(data);
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch your local data here
-        const response = await fetch("data.json");
-        const jsonData = await response.json();
-        // console.log(jsonData);
-        setData(jsonData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="flex gap-5  w-full h-[500px] ">
@@ -42,9 +41,12 @@ const HomeSlider2 = () => {
       <h1 className="text-center text-xl md:text-xl BerkshireSwash pb-4">
         Shop By Category
       </h1>
+      {
+        isLoading && <Loading/>
+      }
         <div className="">
-          {data ? (
-            data.categories.map((category) => (
+          {categories ? (
+            categories.map((category) => (
               <div key={category.id} className=" my-3">
                 <Link className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500">
                   {category.name}

@@ -11,7 +11,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 const uri = `mongodb+srv://${process.env.DB_UserName}:${process.env.DB_Password}@cluster0.w7jtt1b.mongodb.net/?retryWrites=true&w=majority`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -19,33 +18,56 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
-
 async function run() {
-    try {  
-      // collections 
-      const usersCollection = client.db("CreativeHub").collection("users");
+  try {
+    // collections
+    const usersCollection = client.db("CreativeHub").collection("users");
+    const categoriesCollection = client.db("CreativeHub").collection("categories");
+    const productsCollection = client.db("CreativeHub").collection("products");
 
-
-          // User add, delete, make change of users
+    // User add, delete, make change of users
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
-      
-          }
-    
-    finally {
-    }
+    app.get("/users", async (req, res) => {
+      const user = {};
+      const result = await usersCollection.find(user).toArray();
+      res.send(result);
+    });
+
+
+    // Categories
+    app.get('/categories', async(req, res)=>{
+      const query = {};
+      const result = await categoriesCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    //products
+    app.get('/products', async(req, res)=>{
+      const query = {};
+      const result = await productsCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    app.post('/product', async(req,res)=>{
+      const product = req.body;
+      const result = await productsCollection.insertOne(product);
+      res.send(result)
+    })
+  } finally {
+  }
 }
-  run().catch((err) => console.error(err));
+run().catch((err) => console.error(err));
 
 app.get("/", async (req, res) => {
-    res.send("First Office app!!! running");
-  });
-  app.listen(port, () => {
-    console.log(`First Office app!! running on port: ${port}`);
-  });
+  res.send("First Office app!!! running");
+});
+app.listen(port, () => {
+  console.log(`First Office app!! running on port: ${port}`);
+});

@@ -3,31 +3,36 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 import ProductCard from "../../Products/ProductCard/ProductCard";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../../Shared/Loading/Loading";
+import Product from "../../Products/Product/Product";
 
 
 
 const ProductSlider = () => {
-  const [data, setData] = useState();
+  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch your local data here
-        const response = await fetch("products.json");
-        const jsonData = await response.json();
-        // console.log(jsonData);
-        setData(jsonData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
- 
+  const {
+    data: products = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const res = await fetch(`http://localhost:5000/products`);
+      const data = await res.json();
+      // console.log(data);
+      return data;
+    },
+  });
 
 
+  const [getProduct, setProduct] = useState(null);
+  const handleProductInfo =(product)=>{
+    setProduct(product)
+  
+    console.log("Click", product);
+  }
 
 
   return (
@@ -35,7 +40,9 @@ const ProductSlider = () => {
       <h1 className="text-center text-xl md:text-3xl BerkshireSwash mb-8">
         Best Selling Product
       </h1>
-
+   {
+    isLoading && <Loading></Loading>
+   }
       <Carousel
         additionalTransfrom={0}
         arrows
@@ -90,14 +97,17 @@ const ProductSlider = () => {
         slidesToSlide={1}
         swipeable
       >
-        {data ? (
-          data.map((product) => (
-            <ProductCard key={product.productId} product={product}  />
+        {products ? (
+          products.map((product) => (
+            <ProductCard key={product.productId} product={product} handleProductInfo={handleProductInfo} />
           ))
         ) : (
           <></>
         )}
       </Carousel>
+      {
+        getProduct&&<Product product={getProduct}/>
+      }
     </div>
   );
 };

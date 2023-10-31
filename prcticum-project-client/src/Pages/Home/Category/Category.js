@@ -1,34 +1,36 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Loading from "../../../Shared/Loading/Loading";
 
 const Category = () => {
-  const [data, setData] = useState();
+  const {
+    data: categories = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await fetch(`http://localhost:5000/categories`);
+      const data = await res.json();
+      // console.log(data);
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch your local data here
-        const response = await fetch("data.json");
-        const jsonData = await response.json();
-        //   console.log(jsonData);
-        setData(jsonData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="my-16">
       <h1 className="text-center text-xl md:text-3xl BerkshireSwash">
         Shop By Category
       </h1>
+      {
+        isLoading && <Loading/>
+      }
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-7 max-w-[1440px] my-7 mx-5 md:mx-28 justify-items-center">
-        {data ? (
-          data.categories.map((category) => (
+        {categories ? (
+          categories.map((category) => (
             <div key={category.id} className=" hover:border-orange-500 border-stone-100 border-[3px] rounded-[10px]">
               <div
                 

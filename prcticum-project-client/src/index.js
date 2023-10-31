@@ -5,16 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AuthProvider from './Contexts/AuthProvider';
 import { CartProvider } from './Contexts/CartContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
       <CartProvider>
         <App />
         </CartProvider>
       </AuthProvider>
+      </QueryClientProvider>
     
   </React.StrictMode>
 );
