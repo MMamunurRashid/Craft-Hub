@@ -25,7 +25,9 @@ async function run() {
   try {
     // collections
     const usersCollection = client.db("CreativeHub").collection("users");
-    const categoriesCollection = client.db("CreativeHub").collection("categories");
+    const categoriesCollection = client
+      .db("CreativeHub")
+      .collection("categories");
     const productsCollection = client.db("CreativeHub").collection("products");
 
     // User add, delete, make change of users
@@ -40,26 +42,52 @@ async function run() {
       res.send(result);
     });
 
-
     // Categories
-    app.get('/categories', async(req, res)=>{
+    app.get("/categories", async (req, res) => {
       const query = {};
       const result = await categoriesCollection.find(query).toArray();
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     //products
-    app.get('/products', async(req, res)=>{
+    app.get("/products", async (req, res) => {
       const query = {};
       const result = await productsCollection.find(query).toArray();
-      res.send(result)
-    })
+      res.send(result);
+    });
 
-    app.post('/product', async(req,res)=>{
+    app.get("/search-products", async (req, res) => {
+      // const query = { price: { $gt: 100, $lt: 300 } }
+      // const query = { price: { $eq: 200 } }
+      // const query = { price: { $lte: 200 } }
+      // const query = { price: { $ne: 150 } }
+      // const query = { price: { $in: [20, 40, 150] } }
+      // const query = { price: { $nin: [20, 40, 150] } }
+      // const query = { $and: [{price: {$gt: 20}}, {price: {$gt: 100}}] }
+      // const query = { price: { $gt: 100, $lt: 300 } };
+      const search = req.query.search;
+      // console.log('search :', req.query);
+      let query = {};
+      if (search.length) {
+        query = {
+          productName: { $regex: search, $options: "i" },
+        };
+      }
+      const cursor = productsCollection.find(query);
+      // console.log(cursor);
+      const products = await cursor.toArray();
+
+      res.send(products);
+    });
+
+   
+    
+
+    app.post("/product", async (req, res) => {
       const product = req.body;
       const result = await productsCollection.insertOne(product);
-      res.send(result)
-    })
+      res.send(result);
+    });
   } finally {
   }
 }

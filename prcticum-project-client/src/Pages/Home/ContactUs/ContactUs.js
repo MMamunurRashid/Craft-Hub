@@ -74,7 +74,7 @@ const ContactUs = () => {
               placeholder="Type here your Message"
             ></textarea>
             <input
-              className="btn btn-secondary md:px-32 mt-5"
+              className="btn bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500 md:px-32 mt-5"
               type="submit"
               value="Submit"
             />

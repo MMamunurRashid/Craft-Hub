@@ -1,13 +1,12 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import signUpBenner from "../../../assets/signUp.jpg";
 import { AuthContext } from "../../../Contexts/AuthProvider";
 import toast from "react-hot-toast";
 
 const Register = () => {
-  const navigate = useNavigate();
   const { createUser, updateUser } = useContext(AuthContext);
 
   const [signupError, setSignupError] = useState("");
@@ -100,6 +99,11 @@ const Register = () => {
         toast.success("User information saved in database");
       });
   };
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
   return (
     <div className="py-10 min-h-screen">
       <div className="flex">

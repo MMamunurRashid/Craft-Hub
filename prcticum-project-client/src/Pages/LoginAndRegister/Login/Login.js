@@ -9,11 +9,8 @@ import { AuthContext } from "../../../Contexts/AuthProvider";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const navigate = useNavigate();
   const { signIn } = useContext(AuthContext);
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
+ 
   const [loginError, setLoginError] = useState("");
 
   const {
@@ -38,7 +35,10 @@ const Login = () => {
         setLoginError(err.message);
       });
   };
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const from = location.state?.from?.pathname || "/";
 
   return (
     <div className="py-10 min-h-screen">

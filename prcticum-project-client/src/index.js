@@ -1,24 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import AuthProvider from './Contexts/AuthProvider';
-import { CartProvider } from './Contexts/CartContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import AuthProvider from "./Contexts/AuthProvider";
+import { CartProvider } from "./Contexts/CartContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SearchProvider } from "./Contexts/SearchContext";
 const queryClient = new QueryClient();
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-      <CartProvider>
-        <App />
-        </CartProvider>
+        <SearchProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </SearchProvider>
       </AuthProvider>
-      </QueryClientProvider>
-    
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

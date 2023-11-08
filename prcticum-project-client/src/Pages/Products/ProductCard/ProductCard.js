@@ -32,7 +32,7 @@ const ProductCard = ({ product, handleProductInfo}) => {
 
   return (
     <div className="ml-5 rounded-[10px] text-center  hover:border-orange-500 border-stone-100 border-[3px]  ">
-      <div className=" ">
+      <div className=" relative">
         {/* image  hover view button */}
         <div className="absolute inset-0 flex gap-3 items-center justify-center opacity-0 bg-opacity-60 hover:opacity-100 transition-opacity duration-300">
           {/* Add to cart  */}

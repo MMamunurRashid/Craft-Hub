@@ -1,24 +1,38 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../../Font/Font.css";
 import { AuthContext } from "../../Contexts/AuthProvider";
 import { useCart } from "../../Contexts/CartContext";
+import { useSearchContext } from "../../Contexts/SearchContext";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   const { cart } = useCart();
-  const totalPrice = cart.reduce((total, product) => total + product.productPrice, 0);
+  const { setSearchInput } = useSearchContext();
+  const totalPrice = cart.reduce(
+    (total, product) => total + product.productPrice,
+    0
+  );
   const handleLogout = () => {
     logOut()
       .then(() => {})
       .catch((err) => console.error(err));
   };
+
+  const navigate = useNavigate();
+  const searchRef = useRef();
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchInput(searchRef.current.value);
+    console.log(searchRef.current.value);
+    navigate('/products')
+  };
+
   return (
     <div className="fixed  shadow-md max-w-[1440px] bg-slate-200 w-full z-50    md:flex md:justify-between md:items-center md:px-20 px-5 ">
       <div className="navbar  bg-slate-200">
         <div className="navbar-start">
-         
           <div className="flex items-center">
             <Link
               to="/"
@@ -29,21 +43,27 @@ const Navbar = () => {
           </div>
         </div>
         <div className="navbar-center">
-        <div className="form-control">
+          <div className="form-control">
             <div className="input-group">
+              <form onSubmit={handleSearch}>
               <input
+                name="search"
+                ref={searchRef}
                 type="text"
                 placeholder="I'm Looking for..."
-                className="input input-bordered w-[500px]"
+                className="input input-bordered rounded-r-none w-[500px]"
               />
-              <button className="btn bg-orange-500 hover:bg-white  hover:border-2 hover:border-orange-500  hover:text-black text-white">
-                Search
+              </form>
+             <button
+                onClick={handleSearch}
+                className="btn bg-orange-500 hover:bg-white  hover:border-2 hover:border-orange-500  hover:text-black text-white"
+              >
+               <Link to="/products">  Search</Link>
               </button>
             </div>
           </div>
         </div>
         <div className="navbar-end gap-2">
-          
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
               <div className="indicator">
@@ -61,7 +81,9 @@ const Navbar = () => {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="badge badge-sm indicator-item bg-orange-500 text-white">{cart.length}</span>
+                <span className="badge badge-sm indicator-item bg-orange-500 text-white">
+                  {cart.length}
+                </span>
               </div>
             </label>
             <div
