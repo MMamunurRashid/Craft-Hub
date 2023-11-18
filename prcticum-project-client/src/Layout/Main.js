@@ -7,13 +7,15 @@ import { HiShoppingBag } from "react-icons/hi";
 import { BsCartCheckFill } from "react-icons/bs";
 import { useCart } from "../Contexts/CartContext";
 
+
 const Main = () => {
   const { cart } = useCart();
   return (
     <div className="">
       <Navbar />
+      
       <div className="pt-28 max-w-[1440px] mx-auto  ">
-        <div className="fixed z-50 right-20 top-20 h-screen max-w-[1440px] mx-auto overflow-visible ">
+        <div className="hidden md:block fixed z-50 right-20 top-20 h-screen max-w-[1440px] mx-auto overflow-visible ">
           <ul className="menu rounded-box bg-slate-500 ">
             <li data-tip="Home" className="tooltip tooltip-right">
               <FaHome className="h-14 w-14 text-slate-100 hover:text-orange-500" />

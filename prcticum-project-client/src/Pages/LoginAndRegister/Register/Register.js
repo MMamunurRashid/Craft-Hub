@@ -5,12 +5,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import signUpBenner from "../../../assets/signUp.jpg";
 import { AuthContext } from "../../../Contexts/AuthProvider";
 import toast from "react-hot-toast";
+import useToken from "../../../hooks/useToken";
 
 const Register = () => {
   const { createUser, updateUser } = useContext(AuthContext);
 
   const [signupError, setSignupError] = useState("");
   const [createdUserEmail, setCreatedUserEmail] = useState("");
+  const [token] = useToken(createdUserEmail);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+  if (token) {
+    navigate(from, { replace: true });
+  }
 
   const {
     register,
@@ -55,6 +64,7 @@ const Register = () => {
               name: data.name,
               mobileNumber: data.mobileNumber,
               password: data.password,
+              role: data.option
             };
             console.log(userDetails);
             setSignupError("");
@@ -100,10 +110,6 @@ const Register = () => {
       });
   };
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
   return (
     <div className="py-10 min-h-screen">
       <div className="flex">

@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import "../../Font/Font.css";
 import { AuthContext } from "../../Contexts/AuthProvider";
@@ -29,14 +29,49 @@ const Navbar = () => {
     navigate('/products')
   };
 
+  const location = useLocation();
+
+  // Check if the current route is the dashboard
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
   return (
-    <div className="fixed  shadow-md max-w-[1440px] bg-slate-200 w-full z-50    md:flex md:justify-between md:items-center md:px-20 px-5 ">
+    <div className="fixed  shadow-md max-w-[1440px] bg-slate-200 w-full z-50    md:flex md:justify-between md:items-center md:px-20  ">
+      <div className="flex items-center justify-between md:hidden">
+            <Link
+              to="/"
+              className="flex items-center   btn btn-ghost normal-case text-[24px] BerkshireSwash font-bold"
+            >
+              Craft <span className="text-orange-500">Hub</span>
+            </Link>
+           {
+            isDashboard &&  <label
+            htmlFor="sidebar"
+            tabIndex={2}
+            className="btn btn-ghost lg:hidden"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+              />
+            </svg>
+          </label>
+           }
+          </div>
       <div className="navbar  bg-slate-200">
         <div className="navbar-start">
           <div className="flex items-center">
             <Link
               to="/"
-              className="btn btn-ghost normal-case text-5xl BerkshireSwash font-bold"
+              className="hidden md:block btn btn-ghost normal-case text-2xl md:text-5xl BerkshireSwash font-bold"
             >
               Craft <span className="text-orange-500">Hub</span>
             </Link>
@@ -51,7 +86,7 @@ const Navbar = () => {
                 ref={searchRef}
                 type="text"
                 placeholder="I'm Looking for..."
-                className="input input-bordered rounded-r-none w-[500px]"
+                className="input input-bordered rounded-r-none  md:w-[500px]"
               />
               </form>
              <button
@@ -133,28 +168,7 @@ const Navbar = () => {
                   <Link to="/login">Login</Link>
                 )}
               </li>
-              <li>
-                <label
-                  htmlFor="dashboard-drawer"
-                  tabIndex={2}
-                  className="btn btn-ghost lg:hidden"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
-                    />
-                  </svg>
-                </label>
-              </li>
+              
             </ul>
           </div>
         </div>

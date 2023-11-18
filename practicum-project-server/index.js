@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -21,6 +22,23 @@ const client = new MongoClient(uri, {
   },
 });
 
+// verify jwt
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  // console.log(authHeader);
+  if (!authHeader) {
+    return res.status(401).send("Unauthorized Access");
+  }
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+    if (err) {
+      return res.status(403).send({ message: "Forbidden Access Request" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+}
+
 async function run() {
   try {
     // collections
@@ -30,6 +48,66 @@ async function run() {
       .collection("categories");
     const productsCollection = client.db("CreativeHub").collection("products");
 
+    // Verify Admin
+    const verifyAdmin = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await usersCollection.findOne(query);
+
+      if (user?.role !== "Admin") {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
+    // Verify Seller
+    const verifySeller = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await usersCollection.findOne(query);
+
+      if (user?.option !== "Seller") {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
+
+    //jwt
+    app.get("/jwt", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      // console.log(user);
+      if (user) {
+        const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {
+          expiresIn: "1d",
+        });
+        return res.send({ accessToken: token });
+      }
+      res.status(403).send({ accessToken: "Forbidden Access" });
+    });
+
+    // get all  admin
+    app.get("/admin", verifyJWT, verifyAdmin, async (req, res) => {
+      const role = "Admin";
+      const query = { role: role };
+      const admin = await usersCollection.find(query).toArray();
+      res.send(admin);
+    });
+
+    //get seller and buyer from admin panel
+    app.get("/seller", verifyJWT, verifyAdmin, async (req, res) => {
+      const role = "Seller";
+      const query = { role: role };
+      const Buyer = await usersCollection.find(query).toArray();
+      res.send(Buyer);
+    });
+
+    app.get("/buyer", verifyJWT, verifyAdmin, async (req, res) => {
+      const role = "Buyer";
+      const query = { role: role };
+      const seller = await usersCollection.find(query).toArray();
+      res.send(seller);
+    });
     // User add, delete, make change of users
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -57,14 +135,6 @@ async function run() {
     });
 
     app.get("/search-products", async (req, res) => {
-      // const query = { price: { $gt: 100, $lt: 300 } }
-      // const query = { price: { $eq: 200 } }
-      // const query = { price: { $lte: 200 } }
-      // const query = { price: { $ne: 150 } }
-      // const query = { price: { $in: [20, 40, 150] } }
-      // const query = { price: { $nin: [20, 40, 150] } }
-      // const query = { $and: [{price: {$gt: 20}}, {price: {$gt: 100}}] }
-      // const query = { price: { $gt: 100, $lt: 300 } };
       const search = req.query.search;
       // console.log('search :', req.query);
       let query = {};
@@ -79,9 +149,6 @@ async function run() {
 
       res.send(products);
     });
-
-   
-    
 
     app.post("/product", async (req, res) => {
       const product = req.body;

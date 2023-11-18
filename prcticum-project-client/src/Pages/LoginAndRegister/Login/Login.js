@@ -7,11 +7,20 @@ import Swal from "sweetalert2";
 import loginBenner from "../../../assets/login.jpg";
 import { AuthContext } from "../../../Contexts/AuthProvider";
 import toast from "react-hot-toast";
+import useToken from "../../../hooks/useToken";
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
- 
+  const [loginUserEmail, setLoginUserEmail] = useState("");
+  const [token] = useToken(loginUserEmail);
   const [loginError, setLoginError] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
+  if (token) {
+    navigate(from, { replace: true });
+  }
 
   const {
     register,
@@ -26,6 +35,7 @@ const Login = () => {
     signIn(data.email, data.password)
       .then((result) => {
         const user = result.user;
+        setLoginUserEmail(data.email);
         
         toast.success("Login Successful");
         //console.log(user);
@@ -35,10 +45,8 @@ const Login = () => {
         setLoginError(err.message);
       });
   };
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/";
+
 
   return (
     <div className="py-10 min-h-screen">
@@ -95,7 +103,7 @@ const Login = () => {
               />
             </div>
             <div>
-              {/* {loginError && <p className="text-red-600">{loginError}</p>} */}
+              {loginError && <p className="text-red-600">{loginError}</p>}
             </div>
           </form>
           <p>
