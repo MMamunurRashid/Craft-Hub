@@ -46,7 +46,7 @@ const Category = () => {
 
                     {/* image  hover view button */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 bg-opacity-60 hover:opacity-100 transition-opacity duration-700">
-                      <Link to="/">
+                      <Link to={`/category/${category.name}`}>
                         <button className="bg-slate-300 hover:bg-orange-500 hover:text-slate-200 text-gray-800 font-bold py-2 px-4 rounded shadow">
                           {category.name}
                         </button>

@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthProvider";
-import useAdmin from "../hooks/useAdmin";
 import { BounceLoader } from "react-spinners";
+import useSeller from "../hooks/useSeller";
 
-const AdminRouter = ({ children }) => {
+const SellerRouter = ({ children }) => {
   const { user, loading, logOut } = useContext(AuthContext);
-  const [isAdmin, isAdminLoading] = useAdmin(user?.email);
+  const [isSeller, isSellerLoading] = useSeller(user?.email);
   const location = useLocation();
 
-  if (loading || isAdminLoading) {
+  if (loading || isSellerLoading) {
     return (
       <div>
         <div className="flex justify-center items-center w-full h-screen">
@@ -25,11 +25,11 @@ const AdminRouter = ({ children }) => {
     );
   }
 
-  if (user && isAdmin) {
+  if (user && isSeller) {
     return children;
   }
   logOut();
   return <Navigate to="/login" state={{ from: location }} replace></Navigate>;
 };
 
-export default AdminRouter;
+export default SellerRouter;

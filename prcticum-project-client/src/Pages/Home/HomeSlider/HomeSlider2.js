@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Carousel from "react-multi-carousel";
 import img from "../../../assets/Your paragraph text (5).png";
 import img1 from "../../../assets/Your paragraph text (1).png";
@@ -48,7 +48,7 @@ const HomeSlider2 = () => {
           {categories ? (
             categories.map((category) => (
               <div key={category.id} className=" my-3">
-                <Link className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500">
+                <Link to={`/category/${category.name}`} className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500">
                   {category.name}
                 </Link>
               </div>

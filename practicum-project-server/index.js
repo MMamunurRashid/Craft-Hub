@@ -93,6 +93,23 @@ async function run() {
       const admin = await usersCollection.find(query).toArray();
       res.send(admin);
     });
+     // Get, add, delete Admin. All kind of Admin role
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "Admin" });
+    });
+
+        // all kind of a seller role
+    app.get("/users/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      // console.log(email);
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      // console.log(user.role);
+      res.send({ isSeller: user?.role === "Seller" });
+    });
 
     //get seller and buyer from admin panel
     app.get("/seller", verifyJWT, verifyAdmin, async (req, res) => {
@@ -134,6 +151,22 @@ async function run() {
       res.send(result);
     });
 
+    // products by category
+     app.get("/category/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { productCategory: id };
+      const products = await productsCollection.find(query).toArray();
+      const product = products.filter((p) => {
+        if (p.status !== "sold") {
+          return p;
+        }
+      });
+      // console.log(product);
+      // const filter = { status: product };
+      res.send(product);
+    });
+
     app.get("/search-products", async (req, res) => {
       const search = req.query.search;
       // console.log('search :', req.query);
@@ -161,8 +194,8 @@ async function run() {
 run().catch((err) => console.error(err));
 
 app.get("/", async (req, res) => {
-  res.send("First Office app!!! running");
+  res.send("Craft Hub running");
 });
 app.listen(port, () => {
-  console.log(`First Office app!! running on port: ${port}`);
+  console.log(`Craft Hub running on port: ${port}`);
 });

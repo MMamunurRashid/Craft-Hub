@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-
 const Profile = () => {
   const { user, loading, updateUserProfile } = useContext(AuthContext);
   // console.log(user);
@@ -52,7 +51,7 @@ const Profile = () => {
             photoURL: imgData.data.url,
           };
           updateUserProfile(profilePhoto)
-            .then(() => { })
+            .then(() => {})
             .catch((error) => {
               console.error(error);
             });
@@ -69,39 +68,60 @@ const Profile = () => {
         <div>
           {user?.photoURL ? (
             <>
+              <div className="flex flex-col items-center justify-center gap-5">
               <div className="avatar">
-                <div className="w-40 rounded-full ml-10">
+                <div className="w-40 rounded ">
                   <img src={user?.photoURL} alt="" />
                 </div>
               </div>
 
-              <Link
-                to="/dashboard/updatePhoto"
-                className="text-red-500 flex justify-center items-center btn btn-outline"
+              <button
+                className="btn"
+                onClick={() =>
+                  document.getElementById("my_modal_2").showModal()
+                }
               >
                 Upload Photo
-              </Link>
+              </button>
+              </div>
             </>
           ) : (
             <>
-              {/*  User input photo */}
-              <form onSubmit={handleSubmit(handleAddProfilePhoto)}>
-                <input
-                  type="file"
-                  {...register("productPhoto", {
-                    required: "Product Photo is Required",
-                  })}
-                  className="input input-bordered w-full"
-                  required
-                />
-                <input
-                  className="btn btn-accent w-full"
-                  value="Submit"
-                  type="submit"
-                />
-              </form>
+              <button
+                className="btn"
+                onClick={() =>
+                  document.getElementById("my_modal_2").showModal()
+                }
+              >
+                Upload Photo
+              </button>
+              
             </>
           )}
+          <dialog id="my_modal_2" className="modal">
+                <div className="modal-box">
+                  <h1 className="text-xl mb-10">Upload your new profile picture here</h1>
+                  {/*  User input photo */}
+                  <form onSubmit={handleSubmit(handleAddProfilePhoto)}>
+                    <input
+                      type="file"
+                      {...register("productPhoto", {
+                        required: "Product Photo is Required",
+                      })}
+                      className="input input-bordered w-full"
+                      required
+                    />
+                    <input
+                      className="btn btn-accent w-full mt-5"
+                      value="Submit"
+                      type="submit"
+                    />
+                  </form>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
         </div>
         <div className=" shadow-xl px-5 py-10 ml-5 sm:ml-40">
           <p className="md:text-2xl text-xl  JosefinSans">

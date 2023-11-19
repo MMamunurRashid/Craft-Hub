@@ -5,6 +5,7 @@ import Sidebar from '../Shared/Sidebar/Sidebar'
 import { Outlet } from 'react-router-dom';
 
 const DashboardLayout = () => {
+    
     return (
         <div>
             <Navbar/>

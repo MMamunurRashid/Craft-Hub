@@ -8,10 +8,21 @@ import NotFound from "../Pages/NotFound/NotFound";
 import Profile from "../Pages/Dashboard/Profile/Profile";
 import DashboardLayout from "../Layout/DashboardLayout";
 import PrivateRouter from "./PrivateRouter";
+import AdminRouter from "./AdminRouter";
 import AllBuyer from "../Pages/Dashboard/Admin/AllBuyer/AllBuyer";
 import AllSeller from "../Pages/Dashboard/Admin/AllSeller/AllSeller";
 import AllAdmin from "../Pages/Dashboard/Admin/AllAdmin/AllAdmin";
 import ReportedProduct from "../Pages/Dashboard/Admin/ReportedProduct/ReportedProduct";
+import MyOrder from "../Pages/Dashboard/Buyer/MyOrder/MyOrder";
+import MyCart from "../Pages/Dashboard/Buyer/MyCart/MyCart";
+import OrderHistory from "../Pages/Dashboard/Buyer/OrderHistory/OrderHistory";
+import MyReview from "../Pages/Dashboard/Buyer/MyReview/MyReview";
+import SellerRouter from "./SellerRouter";
+import MyProduct from "../Pages/Dashboard/Seller/MyProduct/MyProduct";
+import OrderedProduct from "../Pages/Dashboard/Seller/OrderedProduct/OrderedProduct";
+import AddProduct from "../Pages/Dashboard/Seller/AddProduct/AddProduct";
+import SellReport from "../Pages/Dashboard/Seller/SellReport/SellReport";
+import ShopByCategory from "../Pages/ShopByCategory/ShopByCategory";
 
 
 
@@ -41,6 +52,14 @@ const router = createBrowserRouter([
         path: '/products',
         element: <Products/>
       },
+      {
+        path: "/category/:id",
+        element: <ShopByCategory/>,
+        loader: ({ params }) =>
+          fetch(
+            `http://localhost:5000/category/${params.id}`
+          ),
+      },
 
     ],
   }, {
@@ -60,19 +79,53 @@ const router = createBrowserRouter([
       },
       {
         path: '/dashboard/all-buyer',
-        element: <AllBuyer/>
+        element: <AdminRouter>
+          <AllBuyer/>
+        </AdminRouter>
       },
       {
         path: '/dashboard/all-seller',
-        element: <AllSeller/>
+        element: <AdminRouter><AllSeller/></AdminRouter>
       },
       {
         path: '/dashboard/all-admin',
-        element: <AllAdmin/>
+        element: <AdminRouter><AllAdmin/></AdminRouter>
       },
       {
         path: '/dashboard/reported-product',
-        element: <ReportedProduct/>
+        element: <AdminRouter><ReportedProduct/></AdminRouter>
+      },
+      {
+        path: '/dashboard/my-product',
+        element: <SellerRouter><MyProduct/></SellerRouter>
+      },
+      {
+        path: '/dashboard/ordered-product',
+        element: <SellerRouter><OrderedProduct/></SellerRouter>
+      },
+      {
+        path: '/dashboard/add-product',
+        element: <SellerRouter><AddProduct/></SellerRouter>
+      },
+      {
+        path: '/dashboard/sell-report',
+        element: <SellerRouter><SellReport/></SellerRouter>
+      },
+      {
+        path: '/dashboard/my-order',
+        element: <MyOrder/>
+      },
+      {
+        path: '/dashboard/my-cart',
+        element: <MyCart/>
+      },
+      {
+        path: '/dashboard/order-history',
+        element: <OrderHistory/>
+      },
+      {
+        path: '/dashboard/my-review',
+        element: <MyReview/>
       },
     
     
