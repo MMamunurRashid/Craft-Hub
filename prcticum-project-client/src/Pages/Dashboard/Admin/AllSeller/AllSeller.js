@@ -3,6 +3,7 @@ import React from 'react';
 import { TbListDetails } from "react-icons/tb";
 import {  RiMailAddLine } from "react-icons/ri";
 import { Link } from 'react-router-dom';
+import { BounceLoader } from "react-spinners";
 const AllSeller = () => {
     const {
         data: sellers = [],
@@ -21,6 +22,20 @@ const AllSeller = () => {
           return data;
         },
       });
+           // if loading
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen">
+      <BounceLoader
+        color="#d63636"
+        cssOverride={{}}
+        loading
+        size={150}
+        speedMultiplier={1}
+      />
+    </div>
+    );
+  }
     return (
         <div>
            <table className="table px-2 py-1 text-[16px] table-pin-rows table-pin-cols ">

@@ -65,7 +65,7 @@ async function run() {
       const query = { email: decodedEmail };
       const user = await usersCollection.findOne(query);
 
-      if (user?.option !== "Seller") {
+      if (user?.role !== "Seller") {
         return res.status(403).send({ message: "forbidden access" });
       }
       next();
@@ -188,6 +188,18 @@ async function run() {
       const result = await productsCollection.insertOne(product);
       res.send(result);
     });
+
+    // sellers my product 
+     // sellers my product
+     app.get("/my-product", verifyJWT, verifySeller, async (req, res) => {
+      const email = req.query.email;
+     
+      // console.log(email);
+      const query = { sellerEmail: email };
+      const product = await productsCollection.find(query).toArray();
+      res.send(product);
+    });
+
   } finally {
   }
 }

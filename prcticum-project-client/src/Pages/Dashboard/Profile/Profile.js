@@ -20,6 +20,7 @@ const Profile = () => {
   // if loading
   if (loading) {
     return (
+      <div className="flex justify-center items-center w-full h-screen">
       <BounceLoader
         color="#d63636"
         cssOverride={{}}
@@ -27,6 +28,7 @@ const Profile = () => {
         size={150}
         speedMultiplier={1}
       />
+    </div>
     );
   }
 

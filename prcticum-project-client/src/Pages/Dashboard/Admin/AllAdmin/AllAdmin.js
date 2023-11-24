@@ -3,6 +3,7 @@ import React from 'react';
 import { MdDeleteForever  } from "react-icons/md";
 import {  RiMailAddLine } from "react-icons/ri";
 import { Link } from 'react-router-dom';
+import { BounceLoader } from "react-spinners";
 
 const AllAdmin = () => {
     const {
@@ -22,6 +23,21 @@ const AllAdmin = () => {
           return data;
         },
       });
+
+       // if loading
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen">
+      <BounceLoader
+        color="#d63636"
+        cssOverride={{}}
+        loading
+        size={150}
+        speedMultiplier={1}
+      />
+    </div>
+    );
+  }
     return (
         <div>
            <table className="table px-2 py-1 text-[16px] table-pin-rows table-pin-cols ">
