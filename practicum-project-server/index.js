@@ -146,16 +146,17 @@ async function run() {
 
     //products
     app.get("/products", async (req, res) => {
-      const query = {};
+      const query = { invisible: { $ne: "invisible" } };
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
-
+    
     // products by category
      app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
       // console.log(id);
-      const query = { productCategory: id };
+      // const query = { productCategory: id };
+      const query = {productCategory: id , invisible: { $ne: "invisible" } };
       const products = await productsCollection.find(query).toArray();
       const product = products.filter((p) => {
         if (p.status !== "sold") {
@@ -167,13 +168,34 @@ async function run() {
       res.send(product);
     });
 
+    // product by id
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productsCollection.findOne(query);
+      res.send(result);
+    });
+
+    // update product by id 
+    app.patch('/updateProduct/:id', async (req,res)=>{
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: new ObjectId(id) };
+        const updateData = { $set: { invisible: req.body.invisible } };
+          const result = await productsCollection.updateOne(query, updateData);
+          res.send(result);
+    
+  
+    })
+
     app.get("/search-products", async (req, res) => {
       const search = req.query.search;
       // console.log('search :', req.query);
-      let query = {};
+      let query  = {};
       if (search.length) {
         query = {
           productName: { $regex: search, $options: "i" },
+          invisible: { $ne: "invisible" } 
         };
       }
       const cursor = productsCollection.find(query);

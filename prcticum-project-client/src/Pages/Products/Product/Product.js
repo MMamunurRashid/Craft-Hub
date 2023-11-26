@@ -63,8 +63,14 @@ const Product = ({ product }) => {
                 {" "}
                 <span className="text-4xl">৳ </span> {productPrice}.00
               </h1>
-              <p className="text-green-600 text-xl font-semibold my-3">
-                {product.status === "In Stock" ? "In Stock" : "Out of Stock"}
+              <p
+                className={`text-xl font-semibold my-3 ${
+                  product.availableQuantity === 0
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}
+              >
+                {product.availableQuantity === 0 ? "Out of Stock" : "In Stock"}
               </p>
 
               <p className=" my-1">Category: {productCategory}</p>

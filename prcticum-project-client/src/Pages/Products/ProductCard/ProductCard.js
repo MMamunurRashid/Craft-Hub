@@ -4,7 +4,7 @@ import { MdPreview } from "react-icons/md";
 import { useCart } from "../../../Contexts/CartContext";
 import Product from "../Product/Product";
 
-const ProductCard = ({ product, handleProductInfo}) => {
+const ProductCard = ({ product, handleProductInfo }) => {
   const { addToCart } = useCart();
 
   // Function to generate star icons based on the rating
@@ -28,8 +28,6 @@ const ProductCard = ({ product, handleProductInfo}) => {
     return starIcons;
   };
 
-
-
   return (
     <div className="ml-5 rounded-[10px] text-center  hover:border-orange-500 border-stone-100 border-[3px]  ">
       <div className=" relative">
@@ -50,13 +48,13 @@ const ProductCard = ({ product, handleProductInfo}) => {
           <label
             data-tip="Quick View"
             htmlFor="my_modal_6"
-            onClick={() => { handleProductInfo(product)}}
+            onClick={() => {
+              handleProductInfo(product);
+            }}
             className="hover:cursor-pointer bg-slate-300 hover:text-white hover:bg-orange-500 tooltip  flex-col justify-center items-center text-gray-800 font-bold py-2 px-4 rounded shadow"
           >
             <MdPreview className="w-8 h-8  " />
           </label>
-
-         
         </div>
         <div className="">
           <img
@@ -71,8 +69,14 @@ const ProductCard = ({ product, handleProductInfo}) => {
             </p>
             <p>{product.rating}</p>
           </div>
-          <p className="text-green-600 text-lg font-semibold">
-            {product.status === "In Stock" ? "In Stock" : "Out of Stock"}
+          <p
+            className={`text-xl font-semibold my-3 ${
+              product.availableQuantity === 0
+                ? "text-red-600"
+                : "text-green-600"
+            }`}
+          >
+            {product.availableQuantity === 0 ? "Out of Stock" : "In Stock"}
           </p>
           <h1 className="text-center text-xl font-serif">
             {product.productName}
@@ -82,7 +86,6 @@ const ProductCard = ({ product, handleProductInfo}) => {
           <p>৳ {product.productPrice}</p>
         </div>
       </div>
-       
     </div>
   );
 };

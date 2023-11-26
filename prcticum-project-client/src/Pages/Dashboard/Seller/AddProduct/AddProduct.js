@@ -50,7 +50,7 @@ const AddProduct = () => {
             sellerEmail: user.email,
             productImage: imgData.data.url,
             productName: data.productName,
-            productPrice: data.price,
+            productPrice:  parseInt(data.price),
             productCategory: data.category,
             availableQuantity:data.quantity,
             ProductBrand: data.brand
