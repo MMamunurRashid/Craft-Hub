@@ -134,11 +134,10 @@ const MyProduct = () => {
 
   return (
     <div>
-      <div>
-        <h1 className="text-center text-2xl font-serif font-semibold">
-          My Product
-        </h1>
-      </div>
+      {products.length === 0 ? (
+         <p className="text-center text-2xl font-serif font-semibold">No products in My Product. <br /> Please post your new product <Link to='/dashboard/add-product'>Add Product</Link> </p>
+      ) : (
+       <>  <p className="text-center text-2xl font-serif font-semibold mb-5">My Products</p>
       <table className="table px-2 py-1 text-[16px] table-pin-rows table-pin-cols ">
         <thead>
           <tr>
@@ -263,6 +262,7 @@ const MyProduct = () => {
           </div>
         </div>
       </dialog>
+      </>)}
     </div>
   );
 };

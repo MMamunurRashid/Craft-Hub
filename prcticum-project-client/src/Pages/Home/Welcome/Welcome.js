@@ -2,6 +2,7 @@ import React from "react";
 import offerBg from "../../../assets/newsletter-parallax.png";
 import Bg from "../../../assets/Faina_dezeen_2364_col_0.jpg";
 import PrimaryButton from "../../../Component/PrimaryButton";
+import { Link } from "react-router-dom";
 
 const Welcome = () => {
   return (
@@ -30,7 +31,7 @@ const Welcome = () => {
             <h1 className="text-3xl font-bold mb-2 font-serif text-orange-500">Winter <br/> Welcome Offer</h1>
             <p className="text-lg ">Sale up To</p>
             <h1 className="text-3xl font-bold font-serif text-green-700">30% off</h1>
-            <PrimaryButton>Shop Now</PrimaryButton>
+            <Link to='/products'><PrimaryButton>Shop Now</PrimaryButton></Link>
           </div>
         </div>
       </div>
@@ -48,7 +49,7 @@ const Welcome = () => {
         <h1 className="text-3xl font-bold mb-2 font-serif ">Welcome</h1>
         <h1 className="text-3xl font-bold font-serif ">Free Delivery</h1>
           <p className="text-base text-center">Starting at ৳ 999</p>
-          <PrimaryButton>Shop Now</PrimaryButton>
+          <Link to='/products'><PrimaryButton>Shop Now</PrimaryButton></Link>
         </div>
       </div>
     </div>

@@ -47,6 +47,7 @@ async function run() {
       .db("CreativeHub")
       .collection("categories");
     const productsCollection = client.db("CreativeHub").collection("products");
+    const ordersCollection = client.db("CreativeHub").collection("orders");
 
     // Verify Admin
     const verifyAdmin = async (req, res, next) => {
@@ -93,7 +94,7 @@ async function run() {
       const admin = await usersCollection.find(query).toArray();
       res.send(admin);
     });
-     // Get, add, delete Admin. All kind of Admin role
+    // Get, add, delete Admin. All kind of Admin role
     app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
@@ -101,7 +102,7 @@ async function run() {
       res.send({ isAdmin: user?.role === "Admin" });
     });
 
-        // all kind of a seller role
+    // all kind of a seller role
     app.get("/users/seller/:email", async (req, res) => {
       const email = req.params.email;
       // console.log(email);
@@ -150,13 +151,13 @@ async function run() {
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
-    
+
     // products by category
-     app.get("/category/:id", async (req, res) => {
+    app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
       // console.log(id);
       // const query = { productCategory: id };
-      const query = {productCategory: id , invisible: { $ne: "invisible" } };
+      const query = { productCategory: id, invisible: { $ne: "invisible" } };
       const products = await productsCollection.find(query).toArray();
       const product = products.filter((p) => {
         if (p.status !== "sold") {
@@ -176,32 +177,33 @@ async function run() {
       res.send(result);
     });
 
-    // update product by id 
-    app.patch('/updateProduct/:id', async (req,res)=>{
-        const id = req.params.id;
-        console.log(id);
-        const query = { _id: new ObjectId(id) };
-        const updateData = { $set: { invisible: req.body.invisible } };
-          const result = await productsCollection.updateOne(query, updateData);
-          res.send(result);
-    
-  
-    })
+    // update product by id
+    app.patch("/updateProduct/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { invisible: req.body.invisible } };
+      const result = await productsCollection.updateOne(query, updateData);
+      res.send(result);
+    });
 
     app.get("/search-products", async (req, res) => {
       const search = req.query.search;
-      // console.log('search :', req.query);
-      let query  = {};
-      if (search.length) {
-        query = {
-          productName: { $regex: search, $options: "i" },
-          invisible: { $ne: "invisible" } 
-        };
+    
+      let query = {
+        invisible: { $ne: "invisible" }, 
+      };
+    
+      if (search && search.length) {
+        query.$or = [
+          { productName: { $regex: search, $options: "i" } },
+          { productCategory: { $regex: search, $options: "i" } },
+        ];
       }
+    
       const cursor = productsCollection.find(query);
-      // console.log(cursor);
       const products = await cursor.toArray();
-
+    
       res.send(products);
     });
 
@@ -211,17 +213,68 @@ async function run() {
       res.send(result);
     });
 
-    // sellers my product 
-     // sellers my product
-     app.get("/my-product", verifyJWT, verifySeller, async (req, res) => {
+    // sellers my product
+    // sellers my product
+    app.get("/my-product", verifyJWT, verifySeller, async (req, res) => {
       const email = req.query.email;
-     
+
       // console.log(email);
       const query = { sellerEmail: email };
       const product = await productsCollection.find(query).toArray();
       res.send(product);
     });
 
+    // sellers product order
+    app.get("/product-order", verifyJWT,verifySeller, async (req, res) => {
+      const sellerEmail = req.query.email;
+      // console.log(req.query);
+      const decodedEmail = req.decoded.email;
+      
+      
+      if (sellerEmail !== decodedEmail) {
+        return res.status(403).send("Forbidden Access Request");
+      }
+    
+      try {
+        // Query the orders collection to find orders with products related to the seller
+        const query = { "products.sellerEmail": sellerEmail }; 
+        const orders = await ordersCollection.find(query).toArray();
+        
+        // Filter orders to retrieve only products relevant to the seller
+        const sellerOrders = orders.map(order => {
+          const filteredProducts = order.products.filter(product => product.sellerEmail === sellerEmail);
+          return { ...order, products: filteredProducts };
+        });
+    
+        res.send(sellerOrders);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+    // buyer order
+    // Orders
+    app.post("/orders", async (req, res) => {
+      const query = req.body;
+      const result = await ordersCollection.insertOne(query);
+      res.send(result);
+    });
+
+    // my order
+    app.get("/my-order", verifyJWT, async (req, res) => {
+      const email = req.query.email;
+      // console.log(req.query);
+      const decodedEmail = req.decoded.email;
+      if (email !== decodedEmail) {
+        return res.status(403).send("Forbidden Access Request");
+      }
+      const query = { userEmail: email };
+      const product = await ordersCollection.find(query).toArray();
+      res.send(product);
+    });
+
+    
+    
   } finally {
   }
 }

@@ -94,7 +94,12 @@ const MyCart = () => {
       }
   };
   return (
-    <div className="flex">
+    <div>
+       {cartProducts.length === 0 ? (
+        <p className="text-center text-2xl font-serif font-semibold">No products in your cart.</p>
+      ) : (
+        <>
+        <div className="flex">
       <div className="w-2/3">
         <table className="table px-2 py-1 text-[16px] table-pin-rows table-pin-cols ">
           <thead>
@@ -242,12 +247,15 @@ const MyCart = () => {
             </button>
           
        
-          <OrderModal orderProduct={orderProduct}/>
+          <OrderModal orderProduct={orderProduct} grandTotal={grandTotal} totalPrice={totalPrice} tax={tax}/>
        
           </div>
           </>:<></>
         }
       </div>
+    </div>
+        </>
+      )}
     </div>
   );
 };

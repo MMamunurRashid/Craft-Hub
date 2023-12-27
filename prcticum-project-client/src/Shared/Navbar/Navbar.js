@@ -129,9 +129,9 @@ const Navbar = () => {
                 <span className="font-bold text-lg">{cart.length} item</span>
                 <span className="text-info">Subtotal: ৳ {totalPrice}</span>
                 <div className="card-actions">
-                  <button className="btn btn-primary btn-block">
+                  <Link to='/dashboard/my-cart' className="btn btn-primary btn-block">
                     View cart
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

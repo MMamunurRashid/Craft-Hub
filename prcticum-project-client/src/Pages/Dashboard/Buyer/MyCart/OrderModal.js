@@ -1,20 +1,87 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../../Contexts/AuthProvider";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const OrderModal = ({ orderProduct }) => {
+const OrderModal = ({ orderProduct}) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  console.log(orderProduct);
+  // console.log(orderProduct);
+  
 
-  const handleOrder = (event) => {
+  const handleOrder = (data, event) => {
     event.preventDefault();
-    console.log("click");
+    if (event.nativeEvent.submitter.value === 'Cash On Delivery') {
+      let totalPrice = 0;
+      if (Array.isArray(orderProduct)) {
+        totalPrice = orderProduct.reduce((total, product) => total + product.productPrice, 0);
+      } else if (orderProduct) {
+        totalPrice = orderProduct.productPrice || 0;
+      }
+    
+      const tax = totalPrice * 0.15;
+      const subTotal = 50 + totalPrice + tax;
+      const grandTotal = Number(subTotal.toFixed(3));
+    
+      const orderDetails = {
+        orderDate: new Date(),
+        products: orderProduct,
+        price: totalPrice,
+        tax: tax,
+        deliveryCharge: 50,
+        totalPrice: grandTotal,
+        deliveryStatus: false,
+        paymentStatus: false,
+        userName: user.displayName,
+        userEmail: user.email,
+        orderEmail: data.email,
+        phoneNumber: data.mobileNumber,
+        location: data.location,
+      };
+      fetch("http://localhost:5000/orders", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(orderDetails),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          //console.log(data);
+          if (data.acknowledged) {
+            toast.success("Your Order is confirmed!! Your food is on its way.");
+        
+            // Get the cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('cart'));
+
+            const orderedProductIds = Array.isArray(orderProduct)
+              ? orderProduct.map((product) => product._id)
+              : [orderProduct._id];
+
+            cart = cart.filter((product) => !orderedProductIds.includes(product._id));
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+        
+            navigate("/dashboard/my-order");
+          } else {
+            toast.error(data.message);
+          }
+        });
+      console.log('Cash On Delivery clicked');
+      // You can handle the action specific to this button here
+    } else if (event.nativeEvent.submitter.value === 'Submit With Payment') {
+      // Perform action for Submit With Payment button
+      console.log('Submit With Payment clicked');
+      // You can handle the action specific to this button here
+    }
   };
+  
   return (
     <div className="">
       <dialog id="order-modal" className="modal ">
@@ -92,6 +159,7 @@ const OrderModal = ({ orderProduct }) => {
                   className="btn btn-accent  w-3/4 mt-7  bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg  hover:duration-500"
                   value="Cash On Delivery"
                   type="submit"
+                  name="action"
                 />
               </div>
               <div className="text-center ">
@@ -100,7 +168,8 @@ const OrderModal = ({ orderProduct }) => {
                 </h1>
                 <input
                   type="submit"
-                  value=" Submit With Payment"
+                  value="Submit With Payment"
+                  name="action"
                   className="btn btn-primary  w-3/4 mt-2  bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg  hover:duration-500"
                 />
               </div>
