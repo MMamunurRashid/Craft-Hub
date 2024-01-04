@@ -59,11 +59,13 @@ const SideNavbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/dashboard/reported-product">
-                    <TbMessageReport className="w-5 h-5 md:w-8 md:h-8" />{" "}
-                    <span className="text-xl">Reported Products</span>
+                  <Link to="/dashboard/sales-report">
+                    <MdWorkHistory className="w-5 h-5 md:w-8 md:h-8" />{" "}
+                    <span className="text-xl">Sales Report</span>
                   </Link>
                 </li>
+                
+
               </>
             )}
             {isSeller && (
@@ -89,7 +91,7 @@ const SideNavbar = () => {
                 <li>
                   <Link to="/dashboard/sell-report">
                     <MdWorkHistory className="w-5 h-5 md:w-8 md:h-8" />{" "}
-                    <span className="text-xl">Sell Report</span>
+                    <span className="text-xl">Sales Report</span>
                   </Link>
                 </li>
               </>

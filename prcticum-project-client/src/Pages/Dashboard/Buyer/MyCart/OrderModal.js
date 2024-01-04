@@ -16,42 +16,46 @@ const OrderModal = ({ orderProduct }) => {
 
   const handleOrder = (data, event) => {
     event.preventDefault();
+
+    let totalPrice = 0;
+    if (Array.isArray(orderProduct)) {
+      totalPrice = orderProduct.reduce(
+        (total, product) => total + product.productPrice,
+        0
+      );
+    } else if (orderProduct) {
+      totalPrice = orderProduct.productPrice || 0;
+    }
+
+    const tax = totalPrice * 0.15;
+    const subTotal = 50 + totalPrice + tax;
+    const grandTotal = Number(subTotal.toFixed(3));
+    
+    const date = new Date();
+    const options = { timeZone: "Asia/Dhaka" }; // Set the time zone to Bangladesh
+
+    const localTime = date.toLocaleString("en-US", options);
+
+    console.log(localTime);
+
+    const orderDetails = {
+      orderDate: localTime,
+      products: orderProduct,
+      price: totalPrice,
+      tax: tax,
+      deliveryCharge: 50,
+      totalPrice: grandTotal,
+      deliveryStatus: "",
+      paymentStatus: false,
+      userName: user.displayName,
+      userEmail: user.email,
+      orderEmail: data.email,
+      phoneNumber: data.mobileNumber,
+      location: data.location,
+    };
+
     if (event.nativeEvent.submitter.value === "Cash On Delivery") {
-      let totalPrice = 0;
-      if (Array.isArray(orderProduct)) {
-        totalPrice = orderProduct.reduce(
-          (total, product) => total + product.productPrice,
-          0
-        );
-      } else if (orderProduct) {
-        totalPrice = orderProduct.productPrice || 0;
-      }
-
-      const tax = totalPrice * 0.15;
-      const subTotal = 50 + totalPrice + tax;
-      const grandTotal = Number(subTotal.toFixed(3));
-      const date = new Date();
-      const options = { timeZone: "Asia/Dhaka" }; // Set the time zone to Bangladesh
-
-      const localTime = date.toLocaleString("en-US", options);
-
-      console.log(localTime);
-
-      const orderDetails = {
-        orderDate: localTime,
-        products: orderProduct,
-        price: totalPrice,
-        tax: tax,
-        deliveryCharge: 50,
-        totalPrice: grandTotal,
-        deliveryStatus: "",
-        paymentStatus: false,
-        userName: user.displayName,
-        userEmail: user.email,
-        orderEmail: data.email,
-        phoneNumber: data.mobileNumber,
-        location: data.location,
-      };
+     
       fetch("http://localhost:5000/orders", {
         method: "POST",
         headers: {
@@ -86,9 +90,41 @@ const OrderModal = ({ orderProduct }) => {
       console.log("Cash On Delivery clicked");
       // You can handle the action specific to this button here
     } else if (event.nativeEvent.submitter.value === "Submit With Payment") {
-      // Perform action for Submit With Payment button
+     
+      
+      fetch("http://localhost:5000/orders-payment", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(orderDetails),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          //console.log(data);
+          window.location.replace(data.url);
+          if (data.acknowledged) {
+            toast.success("Your Order is confirmed!! Your food is on its way.");
+
+            // Get the cart from localStorage
+            let cart = JSON.parse(localStorage.getItem("cart"));
+
+            const orderedProductIds = Array.isArray(orderProduct)
+              ? orderProduct.map((product) => product._id)
+              : [orderProduct._id];
+
+            cart = cart.filter(
+              (product) => !orderedProductIds.includes(product._id)
+            );
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            navigate("/dashboard/my-order");
+          } else {
+            toast.error(data);
+          }
+        });
       console.log("Submit With Payment clicked");
-      // You can handle the action specific to this button here
     }
   };
 

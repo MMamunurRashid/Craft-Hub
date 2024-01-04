@@ -12,7 +12,7 @@ import AdminRouter from "./AdminRouter";
 import AllBuyer from "../Pages/Dashboard/Admin/AllBuyer/AllBuyer";
 import AllSeller from "../Pages/Dashboard/Admin/AllSeller/AllSeller";
 import AllAdmin from "../Pages/Dashboard/Admin/AllAdmin/AllAdmin";
-import ReportedProduct from "../Pages/Dashboard/Admin/ReportedProduct/ReportedProduct";
+import ReportedProduct from "../Pages/Dashboard/Admin/SalesReport/SalesReport";
 import MyOrder from "../Pages/Dashboard/Buyer/MyOrder/MyOrder";
 import MyCart from "../Pages/Dashboard/Buyer/MyCart/MyCart";
 import OrderHistory from "../Pages/Dashboard/Buyer/OrderHistory/OrderHistory";
@@ -23,6 +23,7 @@ import OrderedProduct from "../Pages/Dashboard/Seller/OrderedProduct/OrderedProd
 import AddProduct from "../Pages/Dashboard/Seller/AddProduct/AddProduct";
 import SellReport from "../Pages/Dashboard/Seller/SellReport/SellReport";
 import ShopByCategory from "../Pages/ShopByCategory/ShopByCategory";
+import SalesReport from "../Pages/Dashboard/Admin/SalesReport/SalesReport";
 
 
 
@@ -92,8 +93,8 @@ const router = createBrowserRouter([
         element: <AdminRouter><AllAdmin/></AdminRouter>
       },
       {
-        path: '/dashboard/reported-product',
-        element: <AdminRouter><ReportedProduct/></AdminRouter>
+        path: '/dashboard/sales-report',
+        element: <AdminRouter><SalesReport/></AdminRouter>
       },
       {
         path: '/dashboard/my-product',

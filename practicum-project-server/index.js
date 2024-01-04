@@ -8,6 +8,12 @@ require("dotenv").config();
 
 const app = express();
 
+const SSLCommerzPayment = require("sslcommerz-lts");
+const store_id = process.env.Store_ID;
+const store_passwd = process.env.Store_Password;
+// console.log(store_id, store_passwd);
+const is_live = false; //true for live, false for sandbox
+
 // middleware
 app.use(cors());
 app.use(express.json());
@@ -274,9 +280,9 @@ async function run() {
     function getDateRange(option) {
       const currentDate = new Date();
       const timezone = { timeZone: "Asia/Dhaka" };
-    
+
       let startOfDate, endOfDate;
-    
+
       switch (option) {
         case "Today":
           startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
@@ -284,7 +290,7 @@ async function run() {
           endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
           endOfDate.setHours(23, 59, 59, 999);
           break;
-    
+
         case "Yesterday":
           startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
           startOfDate.setDate(startOfDate.getDate() - 1);
@@ -293,7 +299,7 @@ async function run() {
           endOfDate.setDate(endOfDate.getDate() - 1);
           endOfDate.setHours(23, 59, 59, 999);
           break;
-    
+
         case "This Month":
           startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
           startOfDate.setDate(1);
@@ -302,7 +308,7 @@ async function run() {
           endOfDate.setMonth(endOfDate.getMonth() + 1, 0);
           endOfDate.setHours(23, 59, 59, 999);
           break;
-    
+
         case "Last Month":
           startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
           startOfDate.setDate(1);
@@ -312,35 +318,37 @@ async function run() {
           endOfDate.setDate(0);
           endOfDate.setHours(23, 59, 59, 999);
           break;
-    
+
         default:
           startOfDate = new Date();
           endOfDate = new Date();
       }
-    
+
       return { startOfDate, endOfDate };
     }
-    
+
     app.get("/sales-report", verifyJWT, verifySeller, async (req, res) => {
       const sellerEmail = req.query.email;
       const decodedEmail = req.decoded.email;
-    
+
       if (sellerEmail !== decodedEmail) {
         return res.status(403).send("Forbidden Access Request");
       }
-    
+
       const option = req.query.option;
       const { startOfDate, endOfDate } = getDateRange(option);
-    
-      const orders = await ordersCollection.find({
-        deliveryStatus: "complete",
-        paymentStatus: true,
-        $or: [
-          { "products.sellerEmail": sellerEmail },
-          { products: { $elemMatch: { sellerEmail: sellerEmail } } },
-        ],
-      }).toArray();
-    
+
+      const orders = await ordersCollection
+        .find({
+          deliveryStatus: "complete",
+          paymentStatus: true,
+          $or: [
+            { "products.sellerEmail": sellerEmail },
+            { products: { $elemMatch: { sellerEmail: sellerEmail } } },
+          ],
+        })
+        .toArray();
+
       const filteredOrders = orders.filter((order) => {
         const dateComponents = order.orderDate.split(/\/|, |:| /);
         const orderDate = new Date(
@@ -353,22 +361,24 @@ async function run() {
         );
         return orderDate >= startOfDate && orderDate <= endOfDate;
       });
-    
+
       const sellerOrders = filteredOrders.map((order) => {
         let filteredProducts = [];
         if (Array.isArray(order.products)) {
           filteredProducts = order.products.filter(
             (product) => product.sellerEmail === sellerEmail
           );
-        } else if (order.products && order.products.sellerEmail === sellerEmail) {
+        } else if (
+          order.products &&
+          order.products.sellerEmail === sellerEmail
+        ) {
           filteredProducts = [order.products];
         }
         return { ...order, products: filteredProducts };
       });
-    
+
       res.send(sellerOrders);
     });
-    
 
     // buyer order
     // Orders
@@ -377,7 +387,89 @@ async function run() {
       const result = await ordersCollection.insertOne(query);
       res.send(result);
     });
-    // update delivery status
+
+    // online payment order
+    // Orders with payment
+    app.post("/orders-payment", async (req, res) => {
+      const order = req.body;
+
+      let productNames = "";
+      if (Array.isArray(order.products)) {
+        // If `order.products` is an array, join the product names
+        productNames = order.products
+          .map((product) => product.productName)
+          .join(", ");
+      } else if (order.products && order.products.productName) {
+        // If `order.products` is an object, it's a single product
+        productNames = order.products.productName;
+      }
+
+      const transactionId = new ObjectId().toString();
+      const data = {
+        total_amount: order.totalPrice,
+        currency: "BDT",
+        tran_id: transactionId, // use unique tran_id for each api call
+        success_url: `http://localhost:5000/payment/success?transactionId=${transactionId}`,
+        fail_url: `http://localhost:5000/payment/fail?transactionId=${transactionId}`,
+        cancel_url: `http://localhost:5000/payment/cancel`,
+        ipn_url: "http://localhost:5000/ipn",
+        product_name: productNames,
+        product_category: "craft",
+        product_profile: "general",
+        cus_name: order.userName,
+        cus_email: order.orderEmail,
+        cus_add1: order.location,
+        shipping_method: "No",
+        cus_country: "Bangladesh",
+        cus_phone: order.phoneNumber,
+      };
+
+      const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
+      sslcz.init(data).then((apiResponse) => {
+        // Redirect the user to payment gateway
+        let GatewayPageURL = apiResponse.GatewayPageURL;
+        ordersCollection.insertOne({
+          ...order,
+          transactionId,
+          paymentStatus: false,
+        });
+        res.send({ url: GatewayPageURL });
+        console.log(" : ", apiResponse);
+      });
+
+      // const result = await orderCollection.insertOne(query);
+      // res.send(result);
+    });
+
+    app.post("/payment/success", async (req, res) => {
+      const { transactionId } = req.query;
+
+      if (!transactionId) {
+        return res.redirect(`http://localhost:3000/dashboard/my-order`);
+      }
+
+      const result = await ordersCollection.updateOne(
+        { transactionId },
+        { $set: { paymentStatus:true, paidAt: new Date() } }
+      );
+
+      if (result.modifiedCount > 0) {
+        res.redirect(`http://localhost:3000/dashboard/my-order`);
+      }
+    });
+
+    app.post("/payment/fail", async (req, res) => {
+      const { transactionId } = req.query;
+      if (!transactionId) {
+        return res.redirect(`http://localhost:3000/dashboard/my-order`);
+      }
+      const result = await ordersCollection.deleteOne({ transactionId });
+      if (result.deletedCount) {
+        res.redirect(`http://localhost:3000/dashboard/my-order`);
+      }
+    });
+
+    // update delivery status by seller
     app.patch("/orders/:id", async (req, res) => {
       const id = req.params.id;
       // console.log(id);
@@ -386,7 +478,7 @@ async function run() {
       const result = await ordersCollection.updateOne(query, updateData);
       res.send(result);
     });
-    // for update payment
+    // for update payment by seller
     app.patch("/order-payment/:id", async (req, res) => {
       const id = req.params.id;
       // console.log(id);
@@ -432,6 +524,40 @@ async function run() {
     //     res.status(500).send("Internal Server Error");
     //   }
     // });
+
+    // sales report for admin
+    app.get("/sales-report-admin", verifyJWT, verifyAdmin, async (req, res) => {
+      const sellerEmail = req.query.email;
+      const decodedEmail = req.decoded.email;
+
+      if (sellerEmail !== decodedEmail) {
+        return res.status(403).send("Forbidden Access Request");
+      }
+
+      const option = req.query.option;
+      const { startOfDate, endOfDate } = getDateRange(option);
+
+      const orders = await ordersCollection
+        .find({
+          deliveryStatus: "complete",
+          paymentStatus: true,
+        })
+        .toArray();
+
+      const filteredOrders = orders.filter((order) => {
+        const dateComponents = order.orderDate.split(/\/|, |:| /);
+        const orderDate = new Date(
+          dateComponents[2],
+          parseInt(dateComponents[0]) - 1,
+          dateComponents[1],
+          dateComponents[3],
+          dateComponents[4],
+          dateComponents[5]
+        );
+        return orderDate >= startOfDate && orderDate <= endOfDate;
+      });
+      res.send(filteredOrders);
+    });
   } finally {
   }
 }
