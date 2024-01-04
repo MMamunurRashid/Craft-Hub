@@ -271,245 +271,104 @@ async function run() {
     });
 
     // seller report
+    function getDateRange(option) {
+      const currentDate = new Date();
+      const timezone = { timeZone: "Asia/Dhaka" };
+    
+      let startOfDate, endOfDate;
+    
+      switch (option) {
+        case "Today":
+          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          startOfDate.setHours(0, 0, 0, 0);
+          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          endOfDate.setHours(23, 59, 59, 999);
+          break;
+    
+        case "Yesterday":
+          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          startOfDate.setDate(startOfDate.getDate() - 1);
+          startOfDate.setHours(0, 0, 0, 0);
+          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          endOfDate.setDate(endOfDate.getDate() - 1);
+          endOfDate.setHours(23, 59, 59, 999);
+          break;
+    
+        case "This Month":
+          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          startOfDate.setDate(1);
+          startOfDate.setHours(0, 0, 0, 0);
+          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          endOfDate.setMonth(endOfDate.getMonth() + 1, 0);
+          endOfDate.setHours(23, 59, 59, 999);
+          break;
+    
+        case "Last Month":
+          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          startOfDate.setDate(1);
+          startOfDate.setMonth(startOfDate.getMonth() - 1);
+          startOfDate.setHours(0, 0, 0, 0);
+          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
+          endOfDate.setDate(0);
+          endOfDate.setHours(23, 59, 59, 999);
+          break;
+    
+        default:
+          startOfDate = new Date();
+          endOfDate = new Date();
+      }
+    
+      return { startOfDate, endOfDate };
+    }
+    
     app.get("/sales-report", verifyJWT, verifySeller, async (req, res) => {
       const sellerEmail = req.query.email;
       const decodedEmail = req.decoded.email;
-
+    
       if (sellerEmail !== decodedEmail) {
         return res.status(403).send("Forbidden Access Request");
       }
+    
       const option = req.query.option;
-
-      // for today 
-      if (option === "Today") {
-        const currentDate = new Date();
-        const startOfDayBD = new Date(
-          currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
+      const { startOfDate, endOfDate } = getDateRange(option);
+    
+      const orders = await ordersCollection.find({
+        deliveryStatus: "complete",
+        paymentStatus: true,
+        $or: [
+          { "products.sellerEmail": sellerEmail },
+          { products: { $elemMatch: { sellerEmail: sellerEmail } } },
+        ],
+      }).toArray();
+    
+      const filteredOrders = orders.filter((order) => {
+        const dateComponents = order.orderDate.split(/\/|, |:| /);
+        const orderDate = new Date(
+          dateComponents[2],
+          parseInt(dateComponents[0]) - 1,
+          dateComponents[1],
+          dateComponents[3],
+          dateComponents[4],
+          dateComponents[5]
         );
-        startOfDayBD.setHours(0, 0, 0, 0);
-        const endOfDayBD = new Date(
-          currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
-        );
-        endOfDayBD.setHours(23, 59, 59, 999);
-
-       
-        const orders = await ordersCollection.find({
-          deliveryStatus: "complete",
-          paymentStatus: true,
-          $or: [
-            { "products.sellerEmail": sellerEmail },
-            { products: { $elemMatch: { sellerEmail: sellerEmail } } }, 
-          ],
-        }).toArray();
-        
-        // Filter orders based on orderDate (assuming orderDate is a string)
-        const filteredOrders = orders.filter((order) => {
-          // Splitting the date string into components
-          const dateComponents = order.orderDate.split(/\/|, |:| /); // Split by '/', ', ', ':', or ' '
-        
-          // Constructing a Date object from the components
-          const orderDate = new Date(
-            dateComponents[2], // Year
-            parseInt(dateComponents[0]) - 1, // Month (subtracting 1 as months are 0-indexed in JavaScript Date)
-            dateComponents[1], // Day
-            dateComponents[3], // Hour
-            dateComponents[4], // Minute
-            dateComponents[5], // Second
+        return orderDate >= startOfDate && orderDate <= endOfDate;
+      });
+    
+      const sellerOrders = filteredOrders.map((order) => {
+        let filteredProducts = [];
+        if (Array.isArray(order.products)) {
+          filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
           );
-        
-          // Comparing with start and end of the day
-          return orderDate >= startOfDayBD && orderDate <= endOfDayBD;
-        });
-        
-        const sellerOrders = filteredOrders.map((order) => {
-          let filteredProducts = [];
-          // Check if products is an array or an object
-          if (Array.isArray(order.products)) {
-            // If products is an array, filter products by sellerEmail
-            filteredProducts = order.products.filter(
-              (product) => product.sellerEmail === sellerEmail
-            );
-          } else if (
-            order.products &&
-            order.products.sellerEmail === sellerEmail
-          ) {
-            // If products is an object, check if it matches the sellerEmail
-            filteredProducts = [order.products];
-          }
-
-          return { ...order, products: filteredProducts };
-        });
-
-        res.send(sellerOrders);
-      }
-
-      // for yesterday 
-      if (option === "Yesterday") {
-        const currentDate = new Date();
-        const startOfYesterday = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-        startOfYesterday.setHours(0, 0, 0, 0);
-      
-        const endOfYesterday = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        endOfYesterday.setDate(endOfYesterday.getDate() - 1);
-        endOfYesterday.setHours(23, 59, 59, 999);
-      
-        const orders = await ordersCollection.find({
-          deliveryStatus: "complete",
-          paymentStatus: true,
-          $or: [
-            { "products.sellerEmail": sellerEmail },
-            { products: { $elemMatch: { sellerEmail: sellerEmail } } },
-          ],
-        }).toArray();
-      
-        const filteredOrders = orders.filter((order) => {
-          const dateComponents = order.orderDate.split(/\/|, |:| /);
-          const orderDate = new Date(
-            dateComponents[2],
-            parseInt(dateComponents[0]) - 1,
-            dateComponents[1],
-            dateComponents[3],
-            dateComponents[4],
-            dateComponents[5]
-          );
-          return orderDate >= startOfYesterday && orderDate <= endOfYesterday;
-        });
-      
-        const sellerOrders = filteredOrders.map((order) => {
-          let filteredProducts = [];
-          // Check if products is an array or an object
-          if (Array.isArray(order.products)) {
-            // If products is an array, filter products by sellerEmail
-            filteredProducts = order.products.filter(
-              (product) => product.sellerEmail === sellerEmail
-            );
-          } else if (
-            order.products &&
-            order.products.sellerEmail === sellerEmail
-          ) {
-            // If products is an object, check if it matches the sellerEmail
-            filteredProducts = [order.products];
-          }
-
-          return { ...order, products: filteredProducts };
-        });
-
-        res.send(sellerOrders);
-      }
-      
-      // for This Month
-      if (option === "This Month") {
-        const currentDate = new Date();
-        const startOfThisMonth = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        startOfThisMonth.setDate(1); // Set the date to the 1st day of the month
-        startOfThisMonth.setHours(0, 0, 0, 0); // Set time to start of day
-      
-        const endOfThisMonth = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        endOfThisMonth.setMonth(endOfThisMonth.getMonth() + 1, 0); // Set to last day of current month
-        endOfThisMonth.setHours(23, 59, 59, 999); // Set time to end of day
-      
-        const orders = await ordersCollection.find({
-          deliveryStatus: "complete",
-          paymentStatus: true,
-          $or: [
-            { "products.sellerEmail": sellerEmail },
-            { products: { $elemMatch: { sellerEmail: sellerEmail } } },
-          ],
-        }).toArray();
-      
-        const filteredOrders = orders.filter((order) => {
-          const dateComponents = order.orderDate.split(/\/|, |:| /);
-          const orderDate = new Date(
-            dateComponents[2],
-            parseInt(dateComponents[0]) - 1,
-            dateComponents[1],
-            dateComponents[3],
-            dateComponents[4],
-            dateComponents[5]
-          );
-          return orderDate >= startOfThisMonth && orderDate <= endOfThisMonth;
-        });
-      
-        const sellerOrders = filteredOrders.map((order) => {
-          let filteredProducts = [];
-          // Check if products is an array or an object
-          if (Array.isArray(order.products)) {
-            // If products is an array, filter products by sellerEmail
-            filteredProducts = order.products.filter(
-              (product) => product.sellerEmail === sellerEmail
-            );
-          } else if (
-            order.products &&
-            order.products.sellerEmail === sellerEmail
-          ) {
-            // If products is an object, check if it matches the sellerEmail
-            filteredProducts = [order.products];
-          }
-
-          return { ...order, products: filteredProducts };
-        });
-
-        res.send(sellerOrders);
-      }
-      
-      // for last month 
-      if (option === "Last Month") {
-        const currentDate = new Date();
-        const startOfLastMonth = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        startOfLastMonth.setDate(1); // Set the date to the 1st day of the current month
-        startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1); // Move to the previous month
-        startOfLastMonth.setHours(0, 0, 0, 0); // Set time to start of day
-      
-        const endOfLastMonth = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
-        endOfLastMonth.setDate(0); // Set to the last day of the previous month
-        endOfLastMonth.setHours(23, 59, 59, 999); // Set time to end of day
-      
-        const orders = await ordersCollection.find({
-          deliveryStatus: "complete",
-          paymentStatus: true,
-          $or: [
-            { "products.sellerEmail": sellerEmail },
-            { products: { $elemMatch: { sellerEmail: sellerEmail } } },
-          ],
-        }).toArray();
-      
-        const filteredOrders = orders.filter((order) => {
-          const dateComponents = order.orderDate.split(/\/|, |:| /);
-          const orderDate = new Date(
-            dateComponents[2],
-            parseInt(dateComponents[0]) - 1,
-            dateComponents[1],
-            dateComponents[3],
-            dateComponents[4],
-            dateComponents[5]
-          );
-          return orderDate >= startOfLastMonth && orderDate <= endOfLastMonth;
-        });
-      
-        const sellerOrders = filteredOrders.map((order) => {
-          let filteredProducts = [];
-          // Check if products is an array or an object
-          if (Array.isArray(order.products)) {
-            // If products is an array, filter products by sellerEmail
-            filteredProducts = order.products.filter(
-              (product) => product.sellerEmail === sellerEmail
-            );
-          } else if (
-            order.products &&
-            order.products.sellerEmail === sellerEmail
-          ) {
-            // If products is an object, check if it matches the sellerEmail
-            filteredProducts = [order.products];
-          }
-
-          return { ...order, products: filteredProducts };
-        });
-
-        res.send(sellerOrders);
-      }
-      
+        } else if (order.products && order.products.sellerEmail === sellerEmail) {
+          filteredProducts = [order.products];
+        }
+        return { ...order, products: filteredProducts };
+      });
+    
+      res.send(sellerOrders);
     });
+    
 
     // buyer order
     // Orders

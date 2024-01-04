@@ -13,7 +13,7 @@ const SellReport = () => {
       queryKey: ["sales"],
       queryFn: async () => {
         const res = await fetch(
-          `http://localhost:5000/sales-report?email=${user?.email}&option=This Month`,
+          `http://localhost:5000/sales-report?email=${user?.email}&option=Yesterday`,
           {
             headers: {
               authorization: `bearer ${localStorage.getItem("accessToken")}`,
