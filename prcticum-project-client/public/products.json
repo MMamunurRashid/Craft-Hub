@@ -1,158 +1,219 @@
 [
-    {
-        "productId": 1,
-        "productName": "Oil Painting Color",
-        "productImage": "https://i.ibb.co/sQ6pq7Z/oil-painting-color.jpg",
-        "productPrice": 590,
-        "productCategory": "Painting",
-        "rating": 4.5,
-        "status": "In Stock",
-        "availableQuantity": 100,
-        "saleQuantity": 50,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-    {
-        "productId": 2,
-        "productName": "Oil Painting Brush",
-        "productImage": "https://i.ibb.co/10C69B0/oil-painting-brush.jpg",
-        "productPrice": 300,
-        "productCategory": "Painting",
-        "rating": 4.0,
-        "status": "In Stock",
-        "availableQuantity": 100,
-        "saleQuantity": 50,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 3,
-        "productName": "HandMade Jewellery - 1",
-        "productImage": "https://i.ibb.co/KybdFpw/handmade-jewellery.jpg",
-        "productPrice": 599,
-        "productCategory": "Hand made Jewellery",
-        "rating": 4.0,
-        "status": "In Stock",
-        "availableQuantity": 50,
-        "saleQuantity": 100,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 4,
-        "productName": "Matir Basun Combo",
-        "productImage": "https://i.ibb.co/kxb9zXx/Matir-Basun-combo.png",
-        "productPrice": 1199,
-        "productCategory": "Pottery",
-        "rating": 4.8,
-        "status": "In Stock",
-        "availableQuantity": 75,
-        "saleQuantity": 25,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 5,
-        "productName": "Gift Card-1",
-        "productImage": "https://i.ibb.co/3yxp3Qs/gift-card.jpg",
-        "productPrice": 199,
-        "productCategory": "Paper Crafts",
-        "rating": 4.5,
-        "status": "In Stock",
-        "availableQuantity": 150,
-        "saleQuantity": 50,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 6,
-        "productName": "Ladies Febric Bag",
-        "productImage": "https://i.ibb.co/9tMYSPJ/Ladies-Febric-bag.jpg",
-        "productPrice": 499,
-        "productCategory": "Textile and Fiber Arts",
-        "rating": 4.2,
-        "status": "In Stock",
-        "availableQuantity": 60,
-        "saleQuantity": 40,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 7,
-        "productName": "Micro ARt Product-1",
-        "productImage": "https://i.ibb.co/vwKx5L8/micro-art-product-1.jpg",
-        "productPrice": 299,
-        "productCategory": "Micro Art",
-        "rating": 4.7,
-        "status": "In Stock",
-        "availableQuantity": 80,
-        "saleQuantity": 20,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 8,
-        "productName": "Wood Glass-1",
-        "productImage": "https://i.ibb.co/BTfDsFz/wood-glass.jpg",
-        "productPrice": 199,
-        "productCategory": "Wood Craft",
-        "rating": 4.3,
-        "status": "In Stock",
-        "availableQuantity": 90,
-        "saleQuantity": 10,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 9,
-        "productName": "RGB Light with Glass-1",
-        "productImage": "https://i.ibb.co/b26SdqN/light-glass-2.jpg",
-        "productPrice": 28.99,
-        "productCategory": "Glass Craft",
-        "rating": 3.9,
-        "status": "In Stock",
-        "availableQuantity": 70,
-        "saleQuantity": 30,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 10,
-        "productName": "RGB Light with Glass-2",
-        "productImage": "https://i.ibb.co/849bkTH/light-glass.jpg",
-        "productPrice": 28.99,
-        "productCategory": "Glass Craft",
-        "rating": 3.9,
-        "status": "In Stock",
-        "availableQuantity": 70,
-        "saleQuantity": 30,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 11,
-        "productName": "Leather Wallet",
-        "productImage": "https://i.ibb.co/xjmvGfd/leather-wallet.webp",
-        "productPrice": 399,
-        "productCategory": "Leather Craft",
-        "rating": 4.4,
-        "status": "In Stock",
-        "availableQuantity": 120,
-        "saleQuantity": 80,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      },
-      {
-        "productId": 12,
-        "productName": "Hand Made Jute wallmate",
-        "productImage": "https://i.ibb.co/k3kbvh0/jute-craft.jpg",
-        "productPrice": 599,
-        "productCategory": "Jute craft",
-        "rating": 4.4,
-        "status": "In Stock",
-        "availableQuantity": 20,
-        "saleQuantity": 80,
-        "SellerEmail" : "",
-        "ProductBrand" : ""
-      }
+  {
+    
+    "productId": 7,
+    "productName": "Micro ARt Product-1",
+    "productImage": "https://i.ibb.co/vwKx5L8/micro-art-product-1.jpg",
+    "productPrice": 299,
+    "productCategory": "Micro Art",
+    "rating": 4.7,
+    "status": "In Stock",
+    "availableQuantity": 80,
+    "saleQuantity": 20,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 3,
+    "productName": "HandMade Jewellery - 1",
+    "productImage": "https://i.ibb.co/KybdFpw/handmade-jewellery.jpg",
+    "productPrice": 599,
+    "productCategory": "Hand made Jewellery",
+    "rating": 4,
+    "status": "In Stock",
+    "availableQuantity": 50,
+    "saleQuantity": 100,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 6,
+    "productName": "Ladies Febric Bag",
+    "productImage": "https://i.ibb.co/9tMYSPJ/Ladies-Febric-bag.jpg",
+    "productPrice": 499,
+    "productCategory": "Textile and Fiber Arts",
+    "rating": 4.2,
+    "status": "In Stock",
+    "availableQuantity": 60,
+    "saleQuantity": 40,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 8,
+    "productName": "Wood Glass-1",
+    "productImage": "https://i.ibb.co/BTfDsFz/wood-glass.jpg",
+    "productPrice": 199,
+    "productCategory": "Wood Craft",
+    "rating": 4.3,
+    "status": "In Stock",
+    "availableQuantity": 90,
+    "saleQuantity": 10,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 10,
+    "productName": "RGB Light with Glass-2",
+    "productImage": "https://i.ibb.co/849bkTH/light-glass.jpg",
+    "productPrice": 28.99,
+    "productCategory": "Glass Craft",
+    "rating": 3.9,
+    "status": "In Stock",
+    "availableQuantity": 70,
+    "saleQuantity": 30,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 4,
+    "productName": "Matir Basun Combo",
+    "productImage": "https://i.ibb.co/kxb9zXx/Matir-Basun-combo.png",
+    "productPrice": 1199,
+    "productCategory": "Pottery",
+    "rating": 4.8,
+    "status": "In Stock",
+    "availableQuantity": 75,
+    "saleQuantity": 25,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 11,
+    "productName": "Leather Wallet",
+    "productImage": "https://i.ibb.co/xjmvGfd/leather-wallet.webp",
+    "productPrice": 399,
+    "productCategory": "Leather Craft",
+    "rating": 4.4,
+    "status": "In Stock",
+    "availableQuantity": 120,
+    "saleQuantity": 80,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 1,
+    "productName": "Oil Painting Color",
+    "productImage": "https://i.ibb.co/sQ6pq7Z/oil-painting-color.jpg",
+    "productPrice": 590,
+    "productCategory": "Painting",
+    "rating": 4.5,
+    "status": "In Stock",
+    "availableQuantity": 100,
+    "saleQuantity": 50,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 2,
+    "productName": "Oil Painting Brush",
+    "productImage": "https://i.ibb.co/10C69B0/oil-painting-brush.jpg",
+    "productPrice": 300,
+    "productCategory": "Painting",
+    "rating": 4,
+    "status": "In Stock",
+    "availableQuantity": 100,
+    "saleQuantity": 50,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 5,
+    "productName": "Gift Card-1",
+    "productImage": "https://i.ibb.co/3yxp3Qs/gift-card.jpg",
+    "productPrice": 199,
+    "productCategory": "Paper Crafts",
+    "rating": 4.5,
+    "status": "In Stock",
+    "availableQuantity": 150,
+    "saleQuantity": 50,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 9,
+    "productName": "RGB Light with Glass-1",
+    "productImage": "https://i.ibb.co/b26SdqN/light-glass-2.jpg",
+    "productPrice": 28.99,
+    "productCategory": "Glass Craft",
+    "rating": 3.9,
+    "status": "In Stock",
+    "availableQuantity": 70,
+    "saleQuantity": 30,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "productId": 12,
+    "productName": "Hand Made Jute wallmate",
+    "productImage": "https://i.ibb.co/k3kbvh0/jute-craft.jpg",
+    "productPrice": 599,
+    "productCategory": "Jute craft",
+    "rating": 4.4,
+    "status": "In Stock",
+    "availableQuantity": 20,
+    "saleQuantity": 80,
+    "sellerEmail": "seller@craft.com",
+    "productBrand": ""
+  },
+  {
+    
+    "postDate": "2023-11-24T19:52:04.578Z",
+    "name": "Craft Seller ",
+    "sellerEmail": "seller@craft.com",
+    "productName": "Rajasthani Blue pottery",
+    "productCategory": "Pottery",
+    "availableQuantity": "100",
+    "productBrand": "Non Brand",
+    "productPrice": 300,
+    "productImage": "https://i.ibb.co/7VFx246/blue-pottery.jpg"
+  },
+  {
+    
+    "postDate": "2023-11-25T13:42:17.248Z",
+    "name": "Craft Seller ",
+    "sellerEmail": "seller@craft.com",
+    "productImage": "https://i.ibb.co/Fm50ShC/handmade.webp",
+    "productName": "Hand Made Jewellery",
+    "productPrice": 300,
+    "productCategory": "Hand made Jewellery",
+    "availableQuantity": "50",
+    "productBrand": "Non Brand",
+    "invisible": "visible"
+  },
+  {
+    
+    "postDate": "2023-11-26T22:17:09.574Z",
+    "name": "Craft Seller ",
+    "sellerEmail": "seller@craft.com",
+    "productImage": "https://i.ibb.co/3z0HMj0/key-ring.jpg",
+    "productName": "Key Ring",
+    "productPrice": 50,
+    "productCategory": "Leather Craft",
+    "availableQuantity": "50",
+    "productBrand": "Non Brand"
+  },
+  {
+    
+    "postDate": "2023-12-30T19:36:11.415Z",
+    "name": "Messi",
+    "sellerEmail": "messi@leo.com",
+    "productImage": "https://i.ibb.co/qpsjXWP/papercraft.webp",
+    "productName": "Flower of Paper Craft",
+    "productPrice": 150,
+    "productCategory": "Paper Crafts",
+    "availableQuantity": "50",
+    "productBrand": "Non Brand"
+    }
 ]

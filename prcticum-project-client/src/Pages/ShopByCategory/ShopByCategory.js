@@ -20,7 +20,7 @@ const ShopByCategory = () => {
       </h1>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 md:gap-7 max-w-[1440px] my-7 mx-5 md:mx-28 justify-items-center">
                 {
-                    products.map(product=>(
+                    products?.map(product=>(
                         <ProductCard key={product.productId} product={product}  handleProductInfo={handleProductInfo}/>
                     ))
                 }

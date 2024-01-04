@@ -14,8 +14,8 @@ const Product = ({ product }) => {
     productImage,
     productPrice,
     productCategory,
-    ProductBand,
-    SellerEmail,
+    productBand,
+    sellerEmail,
   } = product;
 
   // Function to generate star icons based on the rating
@@ -74,7 +74,7 @@ const Product = ({ product }) => {
               </p>
 
               <p className=" my-1">Category: {productCategory}</p>
-              <p className=" my-1">Brand: {ProductBand}</p>
+              <p className=" my-1">Brand: {productBand}</p>
               <p className="">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.

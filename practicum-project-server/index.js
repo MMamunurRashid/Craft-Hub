@@ -80,7 +80,7 @@ async function run() {
       // console.log(user);
       if (user) {
         const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {
-          expiresIn: "1d",
+          expiresIn: "60d",
         });
         return res.send({ accessToken: token });
       }
@@ -189,21 +189,21 @@ async function run() {
 
     app.get("/search-products", async (req, res) => {
       const search = req.query.search;
-    
+
       let query = {
-        invisible: { $ne: "invisible" }, 
+        invisible: { $ne: "invisible" },
       };
-    
+
       if (search && search.length) {
         query.$or = [
           { productName: { $regex: search, $options: "i" } },
           { productCategory: { $regex: search, $options: "i" } },
         ];
       }
-    
+
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
-    
+
       res.send(products);
     });
 
@@ -225,38 +225,239 @@ async function run() {
     });
 
     // sellers product order
-    app.get("/product-order", verifyJWT,verifySeller, async (req, res) => {
+    app.get("/product-order", verifyJWT, verifySeller, async (req, res) => {
       const sellerEmail = req.query.email;
       // console.log(req.query);
       const decodedEmail = req.decoded.email;
-      
-      
+
       if (sellerEmail !== decodedEmail) {
         return res.status(403).send("Forbidden Access Request");
       }
-    
+
       try {
         // Query the orders collection to find orders with products related to the seller
-        const query = { "products.sellerEmail": sellerEmail }; 
+        const query = { "products.sellerEmail": sellerEmail };
         const orders = await ordersCollection.find(query).toArray();
-        
+
         // Filter orders to retrieve only products relevant to the seller
-        const sellerOrders = orders.map(order => {
-          const filteredProducts = order.products.filter(product => product.sellerEmail === sellerEmail);
+        const sellerOrders = orders.map((order) => {
+          const filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
+          );
           return { ...order, products: filteredProducts };
         });
-    
+
         res.send(sellerOrders);
       } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
       }
     });
+
+    // seller report
+
+    function getStartOfDay(date) {
+      const options = { timeZone: "Asia/Dhaka" };
+      const startOfDay = date.toLocaleString("en-US", options);
+      // startOfDay.setHours(0, 0, 0, 0);
+      console.log(startOfDay);
+      return startOfDay;
+    }
+    
+    function getEndOfDay(date) {
+      const options = { timeZone: "Asia/Dhaka" };
+      const endOfDay = new Date(date.toLocaleString("en-US", options));
+      endOfDay.setHours(23, 59, 59, 999);
+      return endOfDay;
+    }
+    
+    function getStartOfYesterday(date) {
+      const options = { timeZone: "Asia/Dhaka" };
+      const yesterday = new Date(date.toLocaleString("en-US", options));
+      yesterday.setDate(yesterday.getDate() - 1);
+      return getStartOfDay(yesterday);
+    }
+    
+    function getEndOfYesterday(date) {
+      const options = { timeZone: "Asia/Dhaka" };
+      const yesterday = new Date(date.toLocaleString("en-US", options));
+      yesterday.setDate(yesterday.getDate() - 1);
+      return getEndOfDay(yesterday);
+    }
+    
+    function getStartOfThisMonth(date) {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1, 0, 0, 0));
+    }
+    
+    function getEndOfThisMonth(date) {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999));
+    }
+    
+    function getStartOfLastMonth(date) {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth() - 1, 1, 0, 0, 0));
+    }
+    
+    function getEndOfLastMonth(date) {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), 0, 23, 59, 59, 999));
+    }
+
+    app.get("/sales-report", verifyJWT, verifySeller, async (req, res) => {
+      const sellerEmail = req.query.email;
+      const decodedEmail = req.decoded.email;
+
+      if (sellerEmail !== decodedEmail) {
+        return res.status(403).send("Forbidden Access Request");
+      }
+      const option = req.query.option;
+      const currentDate = new Date();
+      const date = new Date();
+      const options = { timeZone: "Asia/Dhaka" }; // Set the time zone to Bangladesh
+
+      const localTime = date.toLocaleString("en-US", options);
+      // console.log(localTime);
+
+      if (option === "Today") {
+        const startOfDayBD = getStartOfDay(new Date());
+const endOfDayBD = getEndOfDay(new Date());
+        const orderDate = { $gte: startOfDayBD, $lte: endOfDayBD }
+        // console.log(orderDate);
+        const query = {
+          "products.sellerEmail": sellerEmail,
+          deliveryStatus: "complete",
+          paymentStatus: true,
+          orderDate: { $gte: startOfDayBD, $lte: endOfDayBD },
+        };
+
+        const orders = await ordersCollection.find(query).toArray();
+
+        const filteredSellerOrders = orders.map((order) => {
+          const filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
+          );
+          return { ...order, products: filteredProducts };
+        });
+
+        res.send(orders);
+        
+      }
+
+      if (option === "Yesterday") {
+        const startOfYesterdayBD = getStartOfYesterday(currentDate);
+        const endOfYesterdayBD = getEndOfYesterday(currentDate);
+
+        const query = {
+          "products.sellerEmail": sellerEmail,
+          deliveryStatus: "complete",
+          paymentStatus: true,
+          orderDate: { $gte: startOfYesterdayBD, $lte: endOfYesterdayBD },
+        };
+
+        const orders = await ordersCollection.find(query).toArray();
+
+        const filteredSellerOrders = orders.map((order) => {
+          const filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
+          );
+          return { ...order, products: filteredProducts };
+        });
+
+        res.send(filteredSellerOrders);
+      }
+
+      if (option === "This Month") {
+        const startOfCurrentMonthBD = getStartOfThisMonth(currentDate);
+        const endOfCurrentMonthBD = getEndOfThisMonth(currentDate);
+
+       
+        const query = {
+          "products.sellerEmail": sellerEmail,
+          deliveryStatus: "complete",
+          paymentStatus: true,
+          orderDate: { $gte: startOfCurrentMonthBD, $lte: endOfCurrentMonthBD },
+        };
+
+        const orders = await ordersCollection.find(query).toArray();
+
+        const filteredSellerOrders = orders.map((order) => {
+          const filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
+          );
+          return { ...order, products: filteredProducts };
+        });
+
+        res.send(filteredSellerOrders);
+      }
+
+      if (option === "Last Month") {
+        const startOfLastMonthBD = getStartOfLastMonth(currentDate);
+        const endOfLastMonthBD = getEndOfLastMonth(currentDate);
+
+        
+        const query = {
+          "products.sellerEmail": sellerEmail,
+          deliveryStatus: "complete",
+          paymentStatus: true,
+          orderDate: { $gte: startOfLastMonthBD, $lte: endOfLastMonthBD },
+        };
+
+        const orders = await ordersCollection.find(query).toArray();
+
+        const filteredSellerOrders = orders.map((order) => {
+          const filteredProducts = order.products.filter(
+            (product) => product.sellerEmail === sellerEmail
+          );
+          return { ...order, products: filteredProducts };
+        });
+
+        res.send(filteredSellerOrders);
+      }
+      // try {
+      //   const today = new Date();
+      //   today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+
+      //   const tomorrow = new Date(today);
+      //   tomorrow.setDate(tomorrow.getDate() + 1); // Get the start of the next day
+
+      //   const orders = await ordersCollection.find(query).toArray();
+
+      //   // Calculate total sales for today
+      //   const sellerOrders = orders.map((order) => {
+      //     const filteredProducts = order.products.filter(
+      //       (product) => product.sellerEmail === sellerEmail
+      //     );
+      //     return { ...order, products: filteredProducts };
+      //   });
+
+      //   res.send(sellerOrders);
+      // } catch (err) {
+      //   console.error(err);
+      //   res.status(500).send("Internal Server Error");
+      // }
+    });
+
     // buyer order
     // Orders
     app.post("/orders", async (req, res) => {
       const query = req.body;
       const result = await ordersCollection.insertOne(query);
+      res.send(result);
+    });
+    // update delivery status
+    app.patch("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { deliveryStatus: req.body.deliveryStatus } };
+      const result = await ordersCollection.updateOne(query, updateData);
+      res.send(result);
+    });
+    // for update payment
+    app.patch("/order-payment/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { paymentStatus: req.body.paymentStatus } };
+      const result = await ordersCollection.updateOne(query, updateData);
       res.send(result);
     });
 
@@ -273,8 +474,29 @@ async function run() {
       res.send(product);
     });
 
-    
-    
+    // // orders for seller
+    // app.get("/ordered-product", async (req, res) => {
+    //   const email = req.query.email;
+    //   // const decodedEmail = req.decoded.email;
+
+    //   // if (email !== decodedEmail) {
+    //   //   return res.status(403).send("Forbidden Access Request");
+    //   // }
+
+    //   try {
+
+    //     const orders = await ordersCollection.find({
+    //       $or: [
+    //         { 'products.sellerEmail': email },
+    //         { 'products': { $elemMatch: { sellerEmail: email } } }
+    //       ]
+    //     }).toArray();
+
+    //     res.send(orders);
+    //   } catch (error) {
+    //     res.status(500).send("Internal Server Error");
+    //   }
+    // });
   } finally {
   }
 }

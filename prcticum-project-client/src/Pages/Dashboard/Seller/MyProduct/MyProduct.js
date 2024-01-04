@@ -134,7 +134,7 @@ const MyProduct = () => {
 
   return (
     <div>
-      {products.length === 0 ? (
+      {products?.length === 0 ? (
          <p className="text-center text-2xl font-serif font-semibold">No products in My Product. <br /> Please post your new product <Link to='/dashboard/add-product'>Add Product</Link> </p>
       ) : (
        <>  <p className="text-center text-2xl font-serif font-semibold mb-5">My Products</p>
@@ -152,7 +152,8 @@ const MyProduct = () => {
           </tr>
         </thead>
         <tbody>
-          {products?.map((product, idx) => (
+          { products &&(
+          products?.map((product, idx) => (
             <tr key={product._id}>
               <th>{idx + 1}</th>
               <td>
@@ -197,7 +198,7 @@ const MyProduct = () => {
           )}
               </td>
             </tr>
-          ))}
+          )))}
         </tbody>
       </table>
       <dialog id="my_modal_1" className="modal">

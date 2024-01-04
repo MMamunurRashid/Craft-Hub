@@ -30,7 +30,7 @@ const Category = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-7 max-w-[1440px] my-7 mx-5 md:mx-28 justify-items-center">
         {categories ? (
-          categories.map((category) => (
+          categories?.map((category) => (
             <div key={category.id} className=" hover:border-orange-500 border-stone-100 border-[3px] rounded-[10px]">
               <div
                 

@@ -46,7 +46,7 @@ const HomeSlider2 = () => {
       }
         <div className="">
           {categories ? (
-            categories.map((category) => (
+            categories?.map((category) => (
               <div key={category.id} className=" my-3">
                 <Link to={`/category/${category.name}`} className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500">
                   {category.name}

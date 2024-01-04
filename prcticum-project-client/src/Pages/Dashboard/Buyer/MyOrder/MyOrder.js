@@ -66,110 +66,148 @@ const MyOrder = () => {
     }
   }, [productId]);
 
-
-
   return (
     <div>
-      {orders.length === 0 ? (
-         <p className="text-center text-2xl font-serif font-semibold">No products in your order.</p>
+      {orders?.length === 0 ? (
+        <p className="text-center text-2xl font-serif font-semibold">
+          No products in your order.
+        </p>
       ) : (
-       <>  <p className="text-center text-2xl font-serif font-semibold mb-5">My Orders</p>
-       {orders?.map((order, idx) => (
-         <div key={idx} className="ml-10 p-5 my-5 shadow-sm  hover:border-orange-500 border-[3px] border-stone-100">
-            <p className="text-xl  font-semibold">Order ID: {order._id}</p>
-           <p className="text-lg">Order Date: {order.orderDate}</p>
-           <p className="text-lg">Product Price: {order.price} BDT</p>
-           <p className="text-lg">Tax: {order.tax} BDT</p>
-           <p className="text-lg">Delivery Charge: 50 BDT</p>
-           <p className="text-lg">Grand Total: {order.totalPrice} BDT</p>
-           <p className="text-lg">Your Ordered Product: ⬇️</p>
-           {Array.isArray(order.products) ? (
-      order.products.map((product, index) => (
-        <div >
-          <div className="flex items-center justify-between p-3  hover:border-orange-500 border-[2px] border-stone-100">
-            <img className="rounded w-24 h-24"  src={product.productImage} alt="" />
-          <p onClick={() => handleViewProduct(product?._id)} key={index} className=" cursor-pointer">{product.productName}</p>
-          <p>Price: {product.productPrice} BDT</p>
-          
-          </div>
-          <dialog id="views-modal" className="modal">
-          <div className="modal-box w-[97%] max-w-6xl">
-            <h3 className="font-semibold font-serif text-2xl">
-              {viewproduct?.productName}
-            </h3>
-            <div className="flex items-center  gap-3">
-              <p className="flex text-orange-500">
-                {" "}
-                {renderStars(viewproduct?.rating)}{" "}
-              </p>
-              <p>{viewproduct?.rating}</p>
-            </div>
-
-            <div className="divider h-[1px] bg-orange-500"></div>
-
-            <div className="flex gap-10">
-              {/* img  */}
-              <div className="w-[35%]">
-                <img src={viewproduct?.productImage} alt="" />
-              </div>
-              {/* details  */}
-              <div className="w-[40%] mt-10">
-                <h1 className="text-3xl">
-                  {" "}
-                  <span className="text-4xl">৳ </span> {viewproduct?.productPrice}
-                  .00
-                </h1>
-                <p
-                  className={`text-xl font-semibold my-3 ${
-                    viewproduct?.availableQuantity === 0
-                      ? "text-red-600"
-                      : "text-green-600"
-                  }`}
+        <>
+          {" "}
+          <p className="text-center text-2xl font-serif font-semibold mb-5">
+            My Orders
+          </p>
+          {orders &&
+            orders?.map((order, idx) => (
+              <div key={idx}>
+                {
+                  order.deliveryStatus===""? <div
+                  
+                  className="ml-10 p-5 my-5 shadow-sm  hover:border-orange-500 border-[3px] border-stone-100"
                 >
-                  {viewproduct?.availableQuantity === 0
-                    ? "Out of Stock"
-                    : "In Stock"}
-                </p>
-               
-
-                <p className=" my-1">Category: {viewproduct?.productCategory}</p>
-                <p className=" my-1">Brand: {viewproduct?.productBand}</p>
-                <p className="">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
+                  <p className="text-xl  font-semibold">Order ID: {order._id}</p>
+                  <p className="text-lg">Order Date: {order.orderDate}</p>
+                  <p className="text-lg">Product Price: {order.price} BDT</p>
+                  <p className="text-lg">Tax: {order.tax} BDT</p>
+                  <p className="text-lg">Delivery Charge: 50 BDT</p>
+                  <p className="text-lg">Grand Total: {order.totalPrice} BDT</p>
+                  <p className="text-lg">Delivery Status: {order?.deliveryStatus===""? "Not Shipped Yet":order?.deliveryStatus} </p>
+                  <p className="text-lg">Payment Status: {order?.paymentStatus===true? "complete":"Not yet"} </p>
+                  <p className="text-lg">Your Ordered Product: ⬇️</p>
+                  {Array.isArray(order.products) ? (
+                    order?.products?.map((product, index) => (
+                      <div>
+                        <div className="flex items-center justify-between p-3  hover:border-orange-500 border-[2px] border-stone-100">
+                          <img
+                            className="rounded w-24 h-24"
+                            src={product.productImage}
+                            alt=""
+                          />
+                          <p
+                            onClick={() => handleViewProduct(product?._id)}
+                            key={index}
+                            className=" cursor-pointer"
+                          >
+                            {product.productName}
+                          </p>
+                          <p>Price: {product.productPrice} BDT</p>
+                        </div>
+                        <dialog id="views-modal" className="modal">
+                          <div className="modal-box w-[97%] max-w-6xl">
+                            <h3 className="font-semibold font-serif text-2xl">
+                              {viewproduct?.productName}
+                            </h3>
+                            <div className="flex items-center  gap-3">
+                              <p className="flex text-orange-500">
+                                {" "}
+                                {renderStars(viewproduct?.rating)}{" "}
+                              </p>
+                              <p>{viewproduct?.rating}</p>
+                            </div>
+  
+                            <div className="divider h-[1px] bg-orange-500"></div>
+  
+                            <div className="flex gap-10">
+                              {/* img  */}
+                              <div className="w-[35%]">
+                                <img src={viewproduct?.productImage} alt="" />
+                              </div>
+                              {/* details  */}
+                              <div className="w-[40%] mt-10">
+                                <h1 className="text-3xl">
+                                  {" "}
+                                  <span className="text-4xl">৳ </span>{" "}
+                                  {viewproduct?.productPrice}
+                                  .00
+                                </h1>
+                                <p
+                                  className={`text-xl font-semibold my-3 ${
+                                    viewproduct?.availableQuantity === 0
+                                      ? "text-red-600"
+                                      : "text-green-600"
+                                  }`}
+                                >
+                                  {viewproduct?.availableQuantity === 0
+                                    ? "Out of Stock"
+                                    : "In Stock"}
+                                </p>
+  
+                                <p className=" my-1">
+                                  Category: {viewproduct?.productCategory}
+                                </p>
+                                <p className=" my-1">
+                                  Brand: {viewproduct?.productBand}
+                                </p>
+                                <p className="">
+                                  Lorem ipsum dolor sit amet, consectetur
+                                  adipiscing elit. Sed do eiusmod tempor
+                                  incididunt ut labore et dolore magna aliqua.
+                                  Lorem ipsum dolor sit amet, consectetur
+                                  adipiscing elit. Sed do eiusmod tempor
+                                  incididunt ut labore et dolore magna aliqua.
+                                  Lorem ipsum dolor sit amet, consectetur
+                                  adipiscing elit. Sed do eiusmod tempor
+                                  incididunt ut labore et dolore magna aliqua.
+                                </p>
+                              </div>
+                            </div>
+  
+                            <div className="modal-action">
+                              <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button className="btn  bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500">
+                                  Close
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </dialog>
+                      </div>
+                    ))
+                  ) : (
+                    <div>
+                      <div className="flex items-center justify-between p-3  hover:border-orange-500 border-[2px] border-stone-100">
+                        <img
+                          className="rounded w-24 h-24"
+                          src={order.products.productImage}
+                          alt=""
+                        />
+                        <p
+                          onClick={() => handleViewProduct(order.products?._id)}
+                          className=" cursor-pointer"
+                        >
+                          {order.products.productName}
+                        </p>
+                        <p>Price: {order.products.productPrice} BDT</p>
+                      </div>
+                    </div>
+                  )}
+                </div>: <></>
+                }
               </div>
-            </div>
-
-            <div className="modal-action">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn  bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500">
-                  Close
-                </button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-        </div>
-      ))
-    ) : (
-      <div >
-       <div className="flex items-center justify-between p-3  hover:border-orange-500 border-[2px] border-stone-100">
-            <img className="rounded w-24 h-24" src={order.products.productImage} alt="" />
-          <p onClick={() => handleViewProduct(order.products?._id)} className=" cursor-pointer">{order.products.productName}</p>
-          <p>Price: {order.products.productPrice} BDT</p>
-          
-          </div>
-         
-      </div>
-    )}
-         </div>
-       ))}</>
+            ))}
+        </>
       )}
     </div>
   );

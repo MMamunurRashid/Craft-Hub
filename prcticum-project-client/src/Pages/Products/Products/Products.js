@@ -72,7 +72,7 @@ const Products = () => {
                 <></>
               )}
               {categories ? (
-                categories.map((category) => (
+                categories?.map((category) => (
                   <li key={category.id}>
                     <span
                       onClick={() => handleCategoryProduct(category.name)}

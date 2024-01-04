@@ -25,7 +25,7 @@ const HowDeliveryServiceWork = () => {
         How Craft Hub Delivery Service Work For Seller and Buyer
       </h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5  justify-between items-center mx-10 text-center">
-        {services.map((service, index) => (
+        {services?.map((service, index) => (
           <div
             key={index}
             className="flex flex-col items-center shadow-lg p-7  h-[300px] hover:border-orange-500 border-stone-100 border-[3px] rounded-[10px]"

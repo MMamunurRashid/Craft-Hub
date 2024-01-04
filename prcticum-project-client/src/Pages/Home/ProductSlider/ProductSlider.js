@@ -98,7 +98,7 @@ const ProductSlider = () => {
         swipeable
       >
         {products ? (
-          products.map((product) => (
+          products?.map((product) => (
             <ProductCard key={product.productId} product={product} handleProductInfo={handleProductInfo} />
           ))
         ) : (

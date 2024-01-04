@@ -53,7 +53,7 @@ const AddProduct = () => {
             productPrice:  parseInt(data.price),
             productCategory: data.category,
             availableQuantity:data.quantity,
-            ProductBrand: data.brand
+            productBrand: data.brand
           };
           console.log(product);
           // save  information to the database
@@ -90,7 +90,7 @@ const AddProduct = () => {
               {...register("category", {required: "Product Name is Required",})}
               className="select select-bordered w-full"
             >
-              {categories.map((cat) => (
+              {categories?.map((cat) => (
                 <option selected value={cat.categories_id} key={cat._id}>
                   {cat.name}
                 </option>

@@ -69,6 +69,7 @@ const Login = () => {
               })}
               required
               className="input input-bordered input-xl md:w-[500px]"
+              placeholder="Enter your email here"
             />
             {errors.email && (
               <p className="text-red-600">{errors.email?.message}</p>
