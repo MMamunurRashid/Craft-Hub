@@ -574,6 +574,28 @@ async function run() {
       const result = await reviewCollection.find(query).toArray();
       res.send(result);
     });
+
+    app.get("/my-reviews", verifyJWT, async (req, res) => {
+      const email = req.query.email;
+      const decodedEmail = req.decoded.email;
+    
+      if (email !== decodedEmail) {
+        return res.status(403).send("Forbidden Access Request");
+      }
+    
+      try {
+        const userReviews = await reviewCollection.find({ userEmail: email }).toArray();
+    
+        const reviewDetails = await Promise.all(userReviews.map(async (review) => {
+          const productInfo = await productsCollection.findOne({ _id: new ObjectId(review.productId) });
+          return { review, productInfo };
+        }));
+    
+        res.json(reviewDetails);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
   } finally {
   }
 }
