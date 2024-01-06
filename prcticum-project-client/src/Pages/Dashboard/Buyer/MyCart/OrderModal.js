@@ -101,9 +101,9 @@ const OrderModal = ({ orderProduct }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          //console.log(data);
-          window.location.replace(data.url);
-          if (data.acknowledged) {
+          console.log(data);
+         
+          if (data) {
             toast.success("Your Order is confirmed!! Your food is on its way.");
 
             // Get the cart from localStorage
@@ -118,11 +118,10 @@ const OrderModal = ({ orderProduct }) => {
             );
 
             localStorage.setItem("cart", JSON.stringify(cart));
-
-            navigate("/dashboard/my-order");
           } else {
             toast.error(data);
           }
+          window.location.replace(data);
         });
       console.log("Submit With Payment clicked");
     }

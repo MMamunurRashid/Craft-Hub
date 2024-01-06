@@ -24,6 +24,7 @@ import AddProduct from "../Pages/Dashboard/Seller/AddProduct/AddProduct";
 import SellReport from "../Pages/Dashboard/Seller/SellReport/SellReport";
 import ShopByCategory from "../Pages/ShopByCategory/ShopByCategory";
 import SalesReport from "../Pages/Dashboard/Admin/SalesReport/SalesReport";
+import ProductDetails from "../Pages/Products/ProductDetailsPage/ProductDetails";
 
 
 
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
         loader: ({ params }) =>
           fetch(
             `http://localhost:5000/category/${params.id}`
+          ),
+      },
+      {
+        path: "/product-details/:id",
+        element: <ProductDetails/>,
+        loader: ({ params }) =>
+          fetch(
+            `http://localhost:5000/product/${params.id}`
           ),
       },
 

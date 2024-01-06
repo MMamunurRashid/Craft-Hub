@@ -12,7 +12,7 @@ const OrderedProduct = () => {
     refetch,
     isLoading,
   } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", user?.email],
     queryFn: async () => {
       const res = await fetch(
         `http://localhost:5000/product-order?email=${user?.email}`,

@@ -54,6 +54,7 @@ async function run() {
       .collection("categories");
     const productsCollection = client.db("CreativeHub").collection("products");
     const ordersCollection = client.db("CreativeHub").collection("orders");
+    const reviewCollection = client.db("CreativeHub").collection("reviews");
 
     // Verify Admin
     const verifyAdmin = async (req, res, next) => {
@@ -433,7 +434,7 @@ async function run() {
           transactionId,
           paymentStatus: false,
         });
-        res.send({ url: GatewayPageURL });
+        res.send([ url= GatewayPageURL ]);
         console.log(" : ", apiResponse);
       });
 
@@ -557,6 +558,21 @@ async function run() {
         return orderDate >= startOfDate && orderDate <= endOfDate;
       });
       res.send(filteredOrders);
+    });
+
+    // review 
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
+     // review by product id
+     app.get("/review/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { productId: id };
+      const result = await reviewCollection.find(query).toArray();
+      res.send(result);
     });
   } finally {
   }

@@ -99,6 +99,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className="navbar-end gap-2">
+          
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
               <div className="indicator">

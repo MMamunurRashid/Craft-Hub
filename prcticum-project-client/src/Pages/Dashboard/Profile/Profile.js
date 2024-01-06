@@ -135,6 +135,12 @@ const Profile = () => {
           <p className="md:text-xl text-lg  JosefinSans">
             {user?.emailVerified ? "Email Verified" : "Email Not Verified"}
           </p>
+          {/* <p className="md:text-xl text-lg  JosefinSans">
+           User Role: {user?.role}
+          </p>
+          <p className="md:text-xl text-lg  JosefinSans">
+          Phone Number: {user?.phoneNumber}
+          </p> */}
         </div>
       </div>
     </div>

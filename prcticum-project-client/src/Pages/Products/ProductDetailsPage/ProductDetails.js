@@ -5,9 +5,11 @@ import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import { TbTruckReturn } from "react-icons/tb";
 import { MdOutlinePayment } from "react-icons/md";
 import { PiWechatLogoFill } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
-const Product = ({ product }) => {
+const ProductDetails = () => {
+  const product = useLoaderData();
   const {
     productName,
     productId,
@@ -17,7 +19,7 @@ const Product = ({ product }) => {
     productCategory,
     productBand,
     sellerEmail,
-    _id
+    _id,
   } = product;
 
   // Function to generate star icons based on the rating
@@ -41,11 +43,24 @@ const Product = ({ product }) => {
     return starIcons;
   };
 
+  const {
+    data: reviews = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["reviews", product?._id],
+    queryFn: async () => {
+      const res = await fetch(`http://localhost:5000/review/${product?._id}`);
+      const data = await res.json();
+      console.log(data);
+      return data;
+    },
+  });
+
   return (
     <>
-      <input type="checkbox" id="my_modal_6" className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box w-[97%] max-w-6xl">
+      <div className="mx-auto">
+        <div className=" mx-auto mt-5 max-w-6xl">
           <h3 className="font-semibold font-serif text-2xl">{productName}</h3>
           <div className="flex items-center  gap-3">
             <p className="flex text-orange-500"> {renderStars(rating)} </p>
@@ -89,11 +104,6 @@ const Product = ({ product }) => {
                 <button className=" w-[50%] bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500">
                   Add To Cart
                 </button>
-                <Link to={`/product-details/${_id}`}
-               className=" w-[50%] text-center bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500">
-                Details
-                
-                </Link>
               </div>
             </div>
             {/* offer */}
@@ -144,18 +154,42 @@ const Product = ({ product }) => {
             </div>
           </div>
 
-          <div className="modal-action">
-            <label
-              htmlFor="my_modal_6"
-              className="btn  bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500"
-            >
-              Close
-            </label>
+          {/* product review */}
+         
+            <div className="relative grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
+                <h1>See Review about this product.</h1>
+              {reviews?.map((review) => (
+                <div key={review._id} className="pb-1 border-b">
+                  <div className="relative flex gap-4 mt-8 ">
+                    <img
+                      src={review.userPhoto}
+                      className="relative rounded-lg -top-8 -mb-4 bg-white border h-20 w-20"
+                      alt=""
+                      loading="lazy"
+                    />
+                    <div className="flex flex-col w-full">
+                      <div className="flex flex-row justify-between">
+                        <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
+                          {review.userName}
+                        </p>
+                        <a className="text-gray-500 text-xl" href="/">
+                          <i className="fa-solid fa-trash"></i>
+                        </a>
+                      </div>
+                      <p className="text-gray-400 text-sm">
+                        {review.reviewTime}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="-mt-4 text-gray-500">{review.review}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      
     </>
   );
 };
 
-export default Product;
+export default ProductDetails;

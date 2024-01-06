@@ -114,7 +114,7 @@ const MyCart = () => {
           </thead>
           <tbody>
             {cartProducts?.map((product, idx) => (
-              <tr key={product._id} className="hover:border-orange-500 border-stone-100 border-[3px] rounded-[10px]">
+              <tr key={product._id} className="hover:border-orange-500 border-stone-100 border-[2px] rounded-[10px]">
                 <th>{idx + 1}</th>
                 <td>
                   <div className="avatar">
