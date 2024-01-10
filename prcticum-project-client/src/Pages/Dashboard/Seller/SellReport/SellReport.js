@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "react-router-dom";
 import { BounceLoader } from "react-spinners";
 import { useForm } from "react-hook-form";
+import PDF from "../../Admin/SalesReport/PDF";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const SellReport = () => {
   const { user } = useContext(AuthContext);
@@ -19,7 +21,7 @@ const SellReport = () => {
     refetch,
     isLoading,
   } = useQuery({
-    queryKey:["sales", user?.email, selectedValue],
+    queryKey: ["sales", user?.email, selectedValue],
     queryFn: async () => {
       const res = await fetch(
         `http://localhost:5000/sales-report?email=${user?.email}&option=${selectedValue}`,
@@ -35,6 +37,19 @@ const SellReport = () => {
     },
   });
 
+  let totalAmount = 0;
+  let totalProducts = 0;
+  sales.forEach((data) => {
+    totalAmount += data.totalPrice;
+
+    if (Array.isArray(data.products)) {
+      totalProducts += data.products.length;
+    } else if (data.products && typeof data.products === "object") {
+      totalProducts += 1;
+    }
+  });
+  const roundedTotalAmount = totalAmount.toFixed(2);
+
   const handleSelectChange = (data) => {
     console.log(data.option);
     setSelectedValue(data.option);
@@ -45,7 +60,7 @@ const SellReport = () => {
   const options = ["Today", "Yesterday", "This Month", "Last Month"];
 
   return (
-    <div>
+    <div className="mx-10">
       <h1>Total Sales</h1>
       {/* <select onClick={handleSelect} className="select select-bordered w-full max-w-xs">
                 <option selected>Today</option>
@@ -84,13 +99,34 @@ const SellReport = () => {
       ) : (
         <>
           <div className="mt-5">
-            <p className="text-xl">Total No. of paid orders: {sales?.length}</p>
+            <p className="text-xl">
+              You searched for {selectedValue} Total No. of paid orders:{" "}
+              {sales?.length}
+            </p>
           </div>
           <div className="mt-5">
-            <p className="text-xl">Total Sales: ৳</p>
+            <p className="text-xl">Total Sales: {roundedTotalAmount}৳</p>
+          </div>
+          <div className="mt-5">
+            <p className="text-xl">
+              Total No. of Sell Product: {totalProducts}
+            </p>
           </div>
         </>
       )}
+
+      <PDFDownloadLink
+        document={<PDF option={selectedValue} salesData={sales} />}
+        filename="Sales_Report.pdf"
+      >
+        {({ loading }) =>
+          loading ? (
+            <button>Loading Document...</button>
+          ) : (
+            <button className="btn btn-primary mt-10">Download as PDF</button>
+          )
+        }
+      </PDFDownloadLink>
     </div>
   );
 };

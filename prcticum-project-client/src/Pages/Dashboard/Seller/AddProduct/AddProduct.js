@@ -31,6 +31,11 @@ const AddProduct = () => {
   const imgbbKey = "035fa433d4769de53906a7872698cbac";
   const handleAddProduct = (data) => {
     const productPhoto = data.productPhoto[0];
+
+    const date = new Date();
+    const options = { timeZone: "Asia/Dhaka" }; // Set the time zone to Bangladesh
+
+    const localTime = date.toLocaleString("en-US", options);
     // console.log(productPhoto);
     const formData = new FormData();
     formData.append("image", productPhoto);
@@ -45,7 +50,7 @@ const AddProduct = () => {
         if (imgData.success) {
           // console.log(imgData.data.url);
           const product = {
-            postDate: new Date(),
+            postDate: localTime,
             name: user.displayName,
             sellerEmail: user.email,
             productImage: imgData.data.url,
