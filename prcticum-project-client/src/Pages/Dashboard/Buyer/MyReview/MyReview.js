@@ -3,6 +3,7 @@ import { AuthContext } from "../../../../Contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../../Shared/Loading/Loading";
 import { Link } from "react-router-dom";
+import { Rating } from "./Rating";
 
 const MyReview = () => {
   const { user } = useContext(AuthContext);
@@ -62,6 +63,7 @@ const MyReview = () => {
                     loading="lazy"
                   />
                   <div className="flex flex-col w-full">
+                    <Rating rating={data.review.rating} />
                     <div className="flex flex-row justify-between">
                       <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
                         {data.review.userName}
@@ -75,7 +77,7 @@ const MyReview = () => {
                     </p>
                   </div>
                 </div>
-                <p className="-mt-4 text-gray-500">{data.review.review}</p>
+                <p className="mt-1 text-gray-500">{data.review.review}</p>
               </div>
             ))}
           </div>

@@ -4,7 +4,12 @@ import { AuthContext } from "../../../../Contexts/AuthProvider";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const OrderModal = ({ orderProduct }) => {
+const OrderModal = ({
+  orderProduct,
+  deliveryCharge,
+  totalPrice,
+  grandTotal,
+}) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const {
@@ -17,45 +22,35 @@ const OrderModal = ({ orderProduct }) => {
   const handleOrder = (data, event) => {
     event.preventDefault();
 
-    let totalPrice = 0;
-    if (Array.isArray(orderProduct)) {
-      totalPrice = orderProduct.reduce(
-        (total, product) => total + product.productPrice,
-        0
-      );
-    } else if (orderProduct) {
-      totalPrice = orderProduct.productPrice || 0;
-    }
-
-    const tax = totalPrice * 0.15;
-    const subTotal = 50 + totalPrice + tax;
-    const grandTotal = Number(subTotal.toFixed(3));
-    
     const date = new Date();
     const options = { timeZone: "Asia/Dhaka" }; // Set the time zone to Bangladesh
 
     const localTime = date.toLocaleString("en-US", options);
 
     console.log(localTime);
+    const address = {
+      roadNo: data.road,
+      houseNo: data.house,
+      area: data.area,
+      post: data.post,
+      district: data.district,
+    };
 
     const orderDetails = {
       orderDate: localTime,
       products: orderProduct,
       price: totalPrice,
-      tax: tax,
-      deliveryCharge: 50,
+      deliveryCharge: deliveryCharge,
       totalPrice: grandTotal,
       deliveryStatus: "",
       paymentStatus: false,
       userName: user.displayName,
       userEmail: user.email,
-      orderEmail: data.email,
       phoneNumber: data.mobileNumber,
-      location: data.location,
+      location: address,
     };
 
     if (event.nativeEvent.submitter.value === "Cash On Delivery") {
-     
       fetch("http://localhost:5000/orders", {
         method: "POST",
         headers: {
@@ -67,7 +62,7 @@ const OrderModal = ({ orderProduct }) => {
         .then((data) => {
           //console.log(data);
           if (data.acknowledged) {
-            toast.success("Your Order is confirmed!! Your food is on its way.");
+            toast.success("Your Order is confirmed!! Your products is on the way.");
 
             // Get the cart from localStorage
             let cart = JSON.parse(localStorage.getItem("cart"));
@@ -90,8 +85,6 @@ const OrderModal = ({ orderProduct }) => {
       console.log("Cash On Delivery clicked");
       // You can handle the action specific to this button here
     } else if (event.nativeEvent.submitter.value === "Submit With Payment") {
-     
-      
       fetch("http://localhost:5000/orders-payment", {
         method: "POST",
         headers: {
@@ -102,9 +95,9 @@ const OrderModal = ({ orderProduct }) => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-         
+
           if (data) {
-            toast.success("Your Order is confirmed!! Your food is on its way.");
+            toast.success("Your Order is confirmed!! Your products is on the way.");
 
             // Get the cart from localStorage
             let cart = JSON.parse(localStorage.getItem("cart"));
@@ -143,40 +136,69 @@ const OrderModal = ({ orderProduct }) => {
                 Enter your details in below:{" "}
               </h1>
               <div className="">
-                <label className="label">
-                  <span className="text-[16px] ">
-                    Enter your location{" "}
-                    <small className="text-red-500 text-[20px]">*</small>
-                  </span>
+                <label
+                  htmlFor="address"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Enter your Address bellow:
                 </label>
-                <textarea
-                  type="text"
-                  placeholder="Enter your Location in details - Area, Street, House Number"
-                  {...register("location", { required: true, maxLength: 80 })}
-                  required
-                  className="input input-bordered w-full  h-[100px]"
-                />
-              </div>
-              <div className="">
+
                 <label className="label">
-                  <span className="text-[16px] ">
-                    Enter your Email
+                  <span className="label-text">House Number</span>
+                </label>
+                <input
+                  type="text"
+                  {...register("house")}
+                  placeholder="House No"
+                  className="input input-bordered w-full mb-1"
+                />
+
+                <label className="label">
+                  <span className="label-text">Road Number</span>
+                </label>
+                <input
+                  type="text"
+                  {...register("road")}
+                  placeholder="Road No"
+                  className="input input-bordered w-full mb-1"
+                />
+                <label className="label">
+                  <span className="label-text">
+                    Area
                     <small className="text-red-500 text-[20px]">*</small>
                   </span>
                 </label>
                 <input
-                  type="email"
-                  placeholder="Enter your Email"
-                  defaultValue={user.email}
-                  {...register("email", {
-                    required: true,
-                  })}
-                  className="input input-bordered w-full  "
+                  type="text"
+                  {...register("area")}
+                  required
+                  placeholder="Area"
+                  className="input input-bordered w-full mb-1"
                 />
-                {errors.email && (
-                  <p className="text-red-500">{errors.email.message}</p>
-                )}
+                <label className="label">
+                  <span className="label-text">Post </span>
+                </label>
+                <input
+                  type="text"
+                  {...register("post")}
+                  placeholder="Post"
+                  className="input input-bordered w-full mb-1"
+                />
+                <label className="label">
+                  <span className="label-text">
+                    District
+                    <small className="text-red-500 text-[20px]">*</small>
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  {...register("district")}
+                  required
+                  placeholder="District"
+                  className="input input-bordered w-full mb-1"
+                />
               </div>
+
               <div className=" ">
                 <label className="label">
                   <span className="text-[16px] ">
@@ -189,8 +211,9 @@ const OrderModal = ({ orderProduct }) => {
                   placeholder="Mobile number"
                   {...register("mobileNumber", {
                     required: true,
-                    minLength: 6,
-                    maxLength: 12,
+                    minLength: 11,
+                    maxLength: 11,
+                    pattern: /^\d{11}$/,
                   })}
                   className="input input-bordered w-full  "
                 />

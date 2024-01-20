@@ -1,5 +1,9 @@
-import React from "react";
-import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
+import React, { useState } from "react";
+import {
+  BsStar,
+  BsStarFill,
+  BsStarHalf,
+} from "react-icons/bs";
 import PrimaryButton from "../../../Component/PrimaryButton";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import { TbTruckReturn } from "react-icons/tb";
@@ -7,20 +11,33 @@ import { MdOutlinePayment } from "react-icons/md";
 import { PiWechatLogoFill } from "react-icons/pi";
 import { Link, useLoaderData } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useCart } from "../../../Contexts/CartContext";
+import BuyNow from "./BuyNow/BuyNow";
+import { Rating } from "../../Dashboard/Buyer/MyReview/Rating";
 
 const ProductDetails = () => {
   const product = useLoaderData();
   const {
     productName,
-    productId,
+    // productId,
     rating,
     productImage,
     productPrice,
     productCategory,
     productBand,
-    sellerEmail,
-    _id,
+    // sellerEmail,
+    // _id,
   } = product;
+  // console.log(product);
+
+  const { cart, addToCart } = useCart();
+  const isProductInCart = cart.some((item) => item._id === product._id);
+
+  const handleClick = () => {
+    if (!isProductInCart) {
+      addToCart(product);
+    }
+  };
 
   // Function to generate star icons based on the rating
   const renderStars = (rating) => {
@@ -57,6 +74,17 @@ const ProductDetails = () => {
     },
   });
 
+
+
+  const [orderProduct, setOrderProduct] = useState(null)
+  const handleOrderModal = (product) => {
+    if (product) {
+      document.getElementById("buy-now-modal").showModal();
+      setOrderProduct(product);
+    }
+  };
+
+
   return (
     <>
       <div className="mx-auto">
@@ -69,7 +97,7 @@ const ProductDetails = () => {
 
           <div className="divider h-[1px] bg-orange-500"></div>
 
-          <div className="flex gap-10">
+          <div className="flex gap-10 mb-2">
             {/* img  */}
             <div className="w-[35%]">
               <img src={productImage} alt="" />
@@ -101,8 +129,32 @@ const ProductDetails = () => {
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </p>
               <div className="flex justify-center">
-                <button className=" w-[50%] bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500">
-                  Add To Cart
+                
+                
+               <div>
+                <button 
+                className=" bg-orange-500 px-5 py-2 rounded-[4px] hover:bg-white  border-2 hover:border-orange-500  hover:text-black text-white text-lg m-5 hover:duration-500"
+                onClick={() => handleOrderModal(product)}
+                >Buy Now</button>
+                <BuyNow
+                      orderProduct={orderProduct}
+                   
+                    />
+               </div>
+
+                <button
+                  onClick={handleClick}
+                  data-tip={isProductInCart ? "Already in Cart" : "Add To Cart"}
+                  className={`tooltip flex-col justify-center items-center  ${
+                    isProductInCart ? "cursor-not-allowed" : ""
+                  }`}
+                  disabled={isProductInCart}
+                >
+                  {isProductInCart ? (
+                    <button className='cursor-not-allowed bg-green-600  px-5 py-2 rounded-[4px]  border-2    text-white text-lg m-5 hover:duration-500'>Product Added</button>
+                  ) : (
+                    <PrimaryButton>Add To Cart</PrimaryButton>
+                  )}
                 </button>
               </div>
             </div>
@@ -116,7 +168,7 @@ const ProductDetails = () => {
                   <div className="ml-5">
                     <h1 className="text-xl font-semibold">Free Delivery</h1>
                     <p>
-                      For all orders over <span className="text-xl">৳ </span>999
+                      For all orders over <span className="text-xl">৳ </span>3000
                     </p>
                   </div>
                 </div>
@@ -155,39 +207,41 @@ const ProductDetails = () => {
           </div>
 
           {/* product review */}
-         
-            <div className="relative grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
-                <h1>See Review about this product.</h1>
-              {reviews?.map((review) => (
-                <div key={review._id} className="pb-1 border-b">
-                  <div className="relative flex gap-4 mt-8 ">
-                    <img
-                      src={review.userPhoto}
-                      className="relative rounded-lg -top-8 -mb-4 bg-white border h-20 w-20"
-                      alt=""
-                      loading="lazy"
-                    />
-                    <div className="flex flex-col w-full">
-                      <div className="flex flex-row justify-between">
-                        <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
-                          {review.userName}
-                        </p>
-                        <a className="text-gray-500 text-xl" href="/">
-                          <i className="fa-solid fa-trash"></i>
-                        </a>
-                      </div>
-                      <p className="text-gray-400 text-sm">
-                        {review.reviewTime}
+
+          <div className="relative grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
+            <h1 className="text-xl">See Review about this product.</h1>
+            {reviews.length===0? <>
+              <h1 className="mt-3">No one Review this product.</h1>
+            </> :
+
+            reviews?.map((review) => (
+              <div key={review._id} className="pb-1 border-b">
+                <div className="relative flex gap-4 mt-8 ">
+                  <img
+                    src={review.userPhoto}
+                    className="relative rounded-lg -top-8 -mb-4 bg-white border h-20 w-20"
+                    alt=""
+                    loading="lazy"
+                  />
+                  <div className="flex flex-col w-full">
+                    <Rating rating={review.rating} />
+                    <div className="flex flex-row justify-between">
+                      <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
+                        {review.userName}
                       </p>
+                      <a className="text-gray-500 text-xl" href="/">
+                        <i className="fa-solid fa-trash"></i>
+                      </a>
                     </div>
+                    <p className="text-gray-400 text-sm">{review.reviewTime}</p>
                   </div>
-                  <p className="-mt-4 text-gray-500">{review.review}</p>
                 </div>
-              ))}
-            </div>
+                <p className="mt-1 text-gray-500">{review.review}</p>
+              </div>
+            ))}
           </div>
         </div>
-      
+      </div>
     </>
   );
 };

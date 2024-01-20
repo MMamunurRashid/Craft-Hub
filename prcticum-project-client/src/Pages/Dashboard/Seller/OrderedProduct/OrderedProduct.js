@@ -23,8 +23,13 @@ const OrderedProduct = () => {
         }
       );
       const data = await res.json();
-      // console.log(data);
-      return data;
+
+      // Sort the orders by orderDate in descending order
+      const sortedOrders = data.sort(
+        (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+      );
+
+      return sortedOrders;
     },
   });
 
@@ -68,100 +73,50 @@ const OrderedProduct = () => {
     }
   }, [productId]);
 
+  const [deliveryManData, setDeliveryManData] = useState([]);
+  useEffect(() => {
+    
+      fetch(`http://localhost:5000/delivery-man`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDeliveryManData(data);
+        });
+    
+  }, []);
+  // console.log(deliveryManData);
 
-  const handleDeliveryShipped = (id) => {
-    console.log("click", id);
+  const handleAssignDeliveryMan = (deliveryManEmail, orderId) => {
+    console.log("Delivery Man email:", deliveryManEmail);
+    console.log("Order ID:", orderId);
+   
     if (
       window.confirm(
-        "Are you sure you want to Delivery Shipped this order?"
+        "Are you sure you want to Assign This Delivery Man for this order?"
       )
     ) {
-      fetch(`http://localhost:5000/orders/${id}`, {
+      fetch(`http://localhost:5000/assign-delivery-man/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ deliveryStatus: "shipped" }),
+        body: JSON.stringify({ deliveryStatus: "assign to delivery man", deliveryManEmail: deliveryManEmail }),
       })
         .then((res) => res.json())
         .then((data) => {
           // Handle the response
           console.log(data);
-          toast.success(`Order Delivery Shipped!`);
+          toast.success(`Order Assign to DeliveryMan!`);
           refetch();
+          document.getElementById("assign-delivery-man-modal").close()
         })
         .catch((error) => {
           // Handle errors
           console.error("Error:", error);
         });
     } else {
-      toast.error("Delivery Shipped cancelled by the user");
+      toast.error("Assign to Delivery Man cancelled by the user");
       console.log(" cancelled by the user");
     }
-  };
-
-  const handleDeliveryComplete = (id) => {
-    console.log("click", id);
-    if (
-      window.confirm(
-        "Are you sure you want to Delivery Shipped this order?"
-      )
-    ) {
-      fetch(`http://localhost:5000/orders/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ deliveryStatus: "complete" }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // Handle the response
-          console.log(data);
-          toast.success(`Order Delivery Complete!`);
-          refetch();
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error("Error:", error);
-        });
-    } else {
-      toast.error("Delivery Complete cancelled by the user");
-      console.log(" cancelled by the user");
-    }
-  };
-
-  const handlePayment =(id)=>{
-    
-      console.log("click", id);
-      if (
-        window.confirm(
-          "Are you sure you want to Complete Payment for this order?"
-        )
-      ) {
-        fetch(`http://localhost:5000/order-payment/${id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ paymentStatus: true }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            // Handle the response
-            // console.log(data);
-            toast.success(`Payment Complete for this product!`);
-            refetch();
-          })
-          .catch((error) => {
-            // Handle errors
-            console.error("Error:", error);
-          });
-      } else {
-        toast.error("Payment cancelled by the user");
-        console.log("Payment cancelled by the user");
-      }
-    
   }
 
   return (
@@ -179,50 +134,95 @@ const OrderedProduct = () => {
           {orders &&
             orders?.map((order, idx) => (
               <div
-                key={idx}
-                className="ml-10 p-5 my-5 shadow-sm  hover:border-orange-500 border-[1px] border-stone-100"
+                key={order._id}
+                className="ml-10 p-5 my-5 shadow-md mb-3"
               >
                 <div className="flex justify-between items-center">
-                  <div>
+                 
+                    <div>
                     <p className="text-xl  font-semibold">
                       Order ID: {order._id}
                     </p>
-                    <p className="text-lg">Order Date: {order.orderDate}</p>
+                    <p className="text-lg">Order Date: {order.orderDate.split(",")[0]}</p>
                     <p className="text-lg">Product Price: {order.price} BDT</p>
-                    <p className="text-lg">Tax: {order.tax} BDT</p>
-                    <p className="text-lg">Delivery Charge: 50 BDT</p>
+                    <p className="text-lg">
+                      Delivery Charge: {order.deliveryCharge} BDT
+                    </p>
                     <p className="text-lg">
                       Grand Total: {order.totalPrice} BDT
                     </p>
+                    <p className="text-lg">Customer Area: {order?.location?.district? order?.location?.area : order.location}</p>
                     <p className="text-lg">Your Ordered Product: ⬇️</p>
-                  </div>
-                  <div>
-                    {/* Button action of order */}
-                    {/* <button className="btn btn-primary">Delivery Preparing</button> */}
-                    {order?.deliveryStatus === "" ? (
-                      <button onClick={() => handleDeliveryShipped(order?._id)} className="btn btn-primary ">
-                       Make Delivery Shipping
-                      </button>
-                    ) : order?.deliveryStatus === "shipped" ? (
-                      <button onClick={() => handleDeliveryComplete(order?._id)} className="btn btn-primary">
-                      Make Delivery Complete
-                      </button>
-                    ) : order?.deliveryStatus === "complete" ? (
-                      <button  className="btn btn-primary btn-disabled">
-                        Delivery Complete
-                      </button>
-                    ) : (
-                      <></> // Handle any other status or condition here if needed
-                    )}
-
-                    {
-                      order?.paymentStatus === false? <button onClick={() => handlePayment(order?._id)} className="btn btn-secondary ml-3">
-                      Make Payment 
-                    </button> : <button className="btn btn-secondary ml-3 btn-disabled">
-                      Payment Complete
-                    </button>
-                    }
+                    </div>
                     
+                  
+                  <div>
+
+                    {/* Assign to delivery man */}
+                    {order?.deliveryStatus === "" ? (
+                      <>
+                        <button
+                         onClick={() =>
+                          document.getElementById("assign-delivery-man-modal").showModal()
+                        }
+                          className="btn btn-primary "
+                        >
+                          Assign to Delivery Man
+                        </button>
+
+                        {/* modal  */}
+                        {/* You can open the modal using document.getElementById('ID').showModal() method */}
+                        
+                        <dialog id="assign-delivery-man-modal" className="modal">
+                          <div className="modal-box">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                                ✕
+                              </button>
+                            </form>
+                            <div>
+                              <h1 className="text-xl text-center foont-bold">Assign Order to Delivery Man</h1>
+                              <h1 className="text-lg">List of available Delivery Man</h1>
+                              {
+                                deliveryManData?.map(dman=>(
+                                  <div onClick={() => handleAssignDeliveryMan(dman?.email, order?._id)} key={dman._id} className="m-2 mb-3 shadow-sm cursor-pointer hover:text-green-600">
+
+                                    <p className="text-lg font-semibold">Name: {dman.name}</p>
+                                    <p>Address (Area): {dman.address.area}</p>
+                                  </div>
+                                ))
+                              }
+                            </div>
+                          </div>
+                        </dialog>
+                      </>
+                    ) : (
+                      <> 
+                      {
+                        order.returnNotes? 
+                        
+                        <div>
+                          <button
+                         onClick={() =>
+                          document.getElementById("assign-delivery-man-modal").showModal()
+                        }
+                          className="btn btn-primary mb-2 w-full"
+                        >
+                          Assign to Delivery Man
+                        </button>
+                          <h1 className="text-xl font-semibold bg-green-600 text-white p-3 rounded-md mb-2">
+                      Delivery Status: {order.deliveryStatus}
+                    </h1>
+                    <h1 className="text-xl font-semibold bg-green-600 text-white p-3 rounded-md">
+                      Return Notes: {order.returnNotes}
+                    </h1>
+                        </div>: <h1 className="text-xl font-semibold bg-green-600 text-white p-3 rounded-md mb-2">
+                      Delivery Status: {order.deliveryStatus}
+                    </h1>
+                      }
+                      </>
+                    )}
                   </div>
                 </div>
                 {Array.isArray(order.products) ? (
@@ -239,7 +239,8 @@ const OrderedProduct = () => {
                           key={index}
                           className=" cursor-pointer"
                         >
-                          {product.productName}
+                          {product.productName} X
+                          {product?.quantity ? product.quantity : 1}
                         </p>
                         <p>Price: {product.productPrice} BDT</p>
                       </div>
@@ -327,7 +328,8 @@ const OrderedProduct = () => {
                         onClick={() => handleViewProduct(order.products?._id)}
                         className=" cursor-pointer"
                       >
-                        {order.products.productName}
+                        {order.products.productName} X
+                          {order?.products?.quantity ? order.products.quantity : 1}
                       </p>
                       <p>Price: {order.products.productPrice} BDT</p>
                     </div>

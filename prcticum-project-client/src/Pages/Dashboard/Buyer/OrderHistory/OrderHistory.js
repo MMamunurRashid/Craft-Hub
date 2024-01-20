@@ -6,6 +6,8 @@ import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { RatingInput } from "./RatingInput";
+import Swal from "sweetalert2";
 
 const OrderHistory = () => {
   const { user } = useContext(AuthContext);
@@ -74,6 +76,7 @@ const OrderHistory = () => {
     }
   }, [productId]);
 
+  const [reviewRating, setReviewRating] = useState(0);
   const handleReviewSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -89,6 +92,7 @@ const OrderHistory = () => {
     const reviewDetails = {
       productId: productId,
       review: review,
+      rating: reviewRating,
       userName: user.displayName,
       userEmail: user.email,
       userPhoto: user.photoURL,
@@ -107,11 +111,70 @@ const OrderHistory = () => {
         console.log(data);
 
         if (data.acknowledged) {
+          document.getElementById("views-modal").close();
           toast.success("Your review submitted");
+          Swal.fire({
+            title: "Good job!",
+            text: "Your Review Submitted!!",
+            icon: "success",
+          });
         } else {
+          Swal.fire({
+            title: "Error",
+            text: "Something Wrong!!",
+            icon: "error",
+          });
           toast.error(data);
         }
       });
+  };
+
+  // return product handler
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [notes, setNotes] = useState("");
+  const handleOpenReturnModal = (id) => {
+    document.getElementById("return-modal").showModal();
+    setSelectedOrder(id);
+  };
+  const handleProductReturn = (event) => {
+    event.preventDefault();
+    console.log(selectedOrder);
+    console.log(notes);
+
+    if (
+      window.confirm(
+        "Are you sure you want to Product return request for this order?"
+      )
+    ) {
+      fetch(`http://localhost:5000/product-return/${selectedOrder}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          returnNotes: notes,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          // Handle the response
+          console.log(data);
+          toast.success(
+            `Product return request has been submitted for this order`
+          );
+          refetch();
+          // document.getElementById("assign-delivery-man-modal").close()
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error("Error:", error);
+        });
+    } else {
+      toast.error("Product return request cancelled by the user");
+      console.log(" cancelled by the user");
+    }
+
+    document.getElementById("return-modal").close();
   };
 
   return (
@@ -131,24 +194,97 @@ const OrderHistory = () => {
               <div key={order._id}>
                 {order.deliveryStatus === "complete" ? (
                   <div className="ml-10 p-5 my-5 shadow-sm  hover:border-orange-500 border-[3px] border-stone-100">
-                    <p className="text-xl  font-semibold">
-                      Order ID: {order._id}
-                    </p>
-                    <p className="text-lg">Order Date: {order.orderDate}</p>
-                    <p className="text-lg">Product Price: {order.price} BDT</p>
-                    <p className="text-lg">Tax: {order.tax} BDT</p>
-                    <p className="text-lg">Delivery Charge: 50 BDT</p>
-                    <p className="text-lg">
-                      Grand Total: {order.totalPrice} BDT
-                    </p>
-                    <p className="text-lg">
-                      Delivery Status: {order.deliveryStatus}{" "}
-                    </p>
-                    <p className="text-lg">
-                      Payment Status:{" "}
-                      {order?.paymentStatus === true ? "complete" : "Not yet"}{" "}
-                    </p>
-                    <p className="text-lg">Your Ordered Product: ⬇️</p>
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="text-xl  font-semibold">
+                          Order ID: {order._id}
+                        </p>
+                        <p className="text-lg">Order Date: {order.orderDate}</p>
+                        <p className="text-lg">
+                          Product Price: {order.price} BDT
+                        </p>
+                        <p className="text-lg">Tax: {order?.tax} BDT</p>
+                        <p className="text-lg">Delivery Charge: 50 BDT</p>
+                        <p className="text-lg">
+                          Grand Total: {order.totalPrice} BDT
+                        </p>
+
+                        <p className="text-lg">Your Ordered Product: ⬇️</p>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <h1 className="text-xl font-semibold bg-green-600 text-white p-3 rounded-md">
+                          Delivery Status:{" "}
+                          {order.deliveryStatus === ""
+                            ? "Not Ship yet"
+                            : order.deliveryStatus}
+                        </h1>
+                        <h1 className="text-xl font-semibold bg-blue-600 text-white p-3 rounded-md">
+                          Payment Status:{" "}
+                          {order.paymentStatus === true
+                            ? "complete"
+                            : "Cash On Delivery"}
+                        </h1>
+
+                        <div>
+                          {
+                            order.returnNotes? <h1 className="text-xl font-semibold bg-blue-600 text-white p-3 rounded-md">
+                            Return in Progress
+                          </h1> : <button
+                            onClick={() => handleOpenReturnModal(order._id)}
+                            className="btn btn-primary mr-10 w-full"
+                          >
+                            Return Product
+                          </button>
+                          }
+
+                          {/* Notes Modal */}
+                          <dialog id="return-modal" className="modal">
+                            <div className="modal-box">
+                              <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button
+                                  onClick={() =>
+                                    document
+                                      .getElementById("return-modal")
+                                      .close()
+                                  }
+                                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                                >
+                                  ✕
+                                </button>
+                              </form>
+                              <div>
+                                <h1 className="text-xl text-center font-bold">
+                                  Add product Return Notes with product details-
+                                  Name, Quantity, Problem.
+                                </h1>
+                                <form
+                                  onSubmit={handleProductReturn}
+                                  className="mt-4"
+                                >
+                                  <label className="block text-lg font-medium text-gray-700">
+                                    Notes:
+                                  </label>
+                                  <textarea
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    className="input input-bordered w-full h-24 mt-1"
+                                    placeholder="Type here your product problems and No of quantity that have problem."
+                                    required
+                                  ></textarea>
+                                  <button
+                                    type="submit"
+                                    className="btn btn-accent w-full mt-4"
+                                  >
+                                    Add Notes
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
+                          </dialog>
+                        </div>
+                      </div>
+                    </div>
 
                     {Array.isArray(order.products) ? (
                       order?.products?.map((product, index) => (
@@ -245,15 +381,22 @@ const OrderHistory = () => {
                               </div>
                               {/* review comment */}
                               <div className="mx-auto mt-5">
-                                <h1>GIVE YOUR REVIEW HERE!!</h1>
+                                <h1>GIVE YOUR RATING AND REVIEW HERE!!</h1>
 
-                                <form onSubmit={handleReviewSubmit}>
+                                <form
+                                  method="dialog"
+                                  onSubmit={handleReviewSubmit}
+                                >
                                   <input
                                     type="text"
                                     name="productId"
                                     value={viewproduct?._id}
                                     placeholder="Type here Subject"
                                     className="input hidden input-bordered md:w-full w-11/12 mt-4"
+                                  />
+                                  <RatingInput
+                                    onRatingChange={setReviewRating}
+                                    initialRating={0}
                                   />
                                   <textarea
                                     name="review"

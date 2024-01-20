@@ -25,6 +25,9 @@ import SellReport from "../Pages/Dashboard/Seller/SellReport/SellReport";
 import ShopByCategory from "../Pages/ShopByCategory/ShopByCategory";
 import SalesReport from "../Pages/Dashboard/Admin/SalesReport/SalesReport";
 import ProductDetails from "../Pages/Products/ProductDetailsPage/ProductDetails";
+import Order from "../Pages/Dashboard/DeliveryMan/Order/Order";
+import DeliveryManRouter from "./DeliveryManRouter";
+import History from "../Pages/Dashboard/DeliveryMan/History/History";
 
 
 
@@ -120,6 +123,14 @@ const router = createBrowserRouter([
       {
         path: '/dashboard/sell-report',
         element: <SellerRouter><SellReport/></SellerRouter>
+      },
+      {
+        path: '/dashboard/delivery-order',
+        element: <DeliveryManRouter><Order/></DeliveryManRouter> 
+      },
+      {
+        path: '/dashboard/delivery-history',
+        element: <DeliveryManRouter><History/></DeliveryManRouter> 
       },
       {
         path: '/dashboard/my-order',

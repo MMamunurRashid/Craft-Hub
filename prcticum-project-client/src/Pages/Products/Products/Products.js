@@ -6,17 +6,25 @@ import Loading from "../../../Shared/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import { useQuery } from "@tanstack/react-query";
+import useSearchValue from "../../../hooks/useSearchValue";
 
 const Products = () => {
   const { searchInput } = useSearchContext();
+  const [searchValue, handleSearchInputChange] = useSearchValue();
   const [search, setSearch] = useState("");
-
-  if (searchInput) {
-    setSearch(searchInput);
+  const [displayLimit, setDisplayLimit] = useState(6);
+  
+  if (searchValue) {
+    setSearch(searchValue);
   }
+  console.log(searchValue);
+  // if (searchInput) {
+  //     setSearch(searchInput);
+  // }
+  //   console.log(searchInput);
 
   const [products, setProducts] = useState([]);
-  const [loading, setIsLoading] = useState(true); // Add loading state
+  const [loading, setIsLoading] = useState(true); 
 
   const {
     data: categories = [],
@@ -34,13 +42,14 @@ const Products = () => {
 
   useEffect(() => {
     setIsLoading(true); // Set loading state to true
-    fetch(`http://localhost:5000/search-products?search=${search}`)
+    fetch(`http://localhost:5000/products-page?limit=${displayLimit}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setProducts(data);
         setIsLoading(false); // Set loading state to false when data is loaded
       });
-  }, [search]);
+  }, [displayLimit]);
 
   const handleCategoryProduct = (id) => {
     setSearch(id);
@@ -51,6 +60,13 @@ const Products = () => {
     setProduct(product);
     // console.log("Click", product);
   };
+  const handleSeeMore = () => {
+    // Increase the display limit when "Show More" is clicked
+    setDisplayLimit(displayLimit + 6); 
+  };
+  
+  
+  const navigate = useNavigate();
 
   return (
     <div className="flex">
@@ -73,7 +89,7 @@ const Products = () => {
               )}
               {categories ? (
                 categories?.map((category) => (
-                  <li key={category.id}>
+                  <li key={category._id}>
                     <span
                       onClick={() => handleCategoryProduct(category.name)}
                       className="text-xl"
@@ -100,7 +116,7 @@ const Products = () => {
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-7 max-w-[1440px] my-7 mx-5 md:mx-28 justify-items-center">
             {products?.map((product) => (
               <ProductCard
-                key={product.productId}
+                key={product._id}
                 product={product}
                 handleProductInfo={handleProductInfo}
               />
@@ -112,6 +128,14 @@ const Products = () => {
           </h1>
         )}
         {getProduct && <Product product={getProduct} />}
+
+        <div className="flex justify-center mb-5">
+          
+           
+            <button onClick={() => handleSeeMore()} className="btn btn-primary">See More</button>
+          
+      
+        </div>
       </div>
     </div>
   );

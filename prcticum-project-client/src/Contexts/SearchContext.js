@@ -8,6 +8,7 @@ export const useSearchContext = () => {
 
 export const SearchProvider = ({ children }) => {
   const [searchInput, setSearchInput] = useState("");
+  console.log(searchInput);
 
   return (
     <SearchContext.Provider value={{ searchInput, setSearchInput }}>

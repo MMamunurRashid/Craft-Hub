@@ -106,7 +106,7 @@ const Product = ({ product }) => {
                   <div className="ml-5">
                     <h1 className="text-xl font-semibold">Free Delivery</h1>
                     <p>
-                      For all orders over <span className="text-xl">৳ </span>999
+                      For all orders over <span className="text-xl">৳ </span>3000
                     </p>
                   </div>
                 </div>

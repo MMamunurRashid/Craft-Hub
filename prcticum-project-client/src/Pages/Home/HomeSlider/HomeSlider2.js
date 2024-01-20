@@ -34,21 +34,21 @@ const HomeSlider2 = () => {
     },
   });
 
-
   return (
     <div className="flex gap-5  w-full h-[500px] ">
       <div className="hidden md:block rounded-lg shadow-lg w-1/6 h-full pt-14">
-      <h1 className="text-center text-xl md:text-xl BerkshireSwash pb-4">
-        Shop By Category
-      </h1>
-      {
-        isLoading && <Loading/>
-      }
+        <h1 className="text-center text-xl md:text-xl BerkshireSwash pb-4">
+          Shop By Category
+        </h1>
+        {isLoading && <Loading />}
         <div className="">
           {categories ? (
             categories?.map((category) => (
               <div key={category.id} className=" my-3">
-                <Link to={`/category/${category.name}`} className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500">
+                <Link
+                  to={`/category/${category.name}`}
+                  className=" font-semibold ml-5 pl-5 py-2 rounded shadow-sm w-full hover:text-orange-500"
+                >
                   {category.name}
                 </Link>
               </div>
@@ -116,7 +116,7 @@ const HomeSlider2 = () => {
               src={img.img}
               style={{
                 display: "block",
-                height: "500px",
+                height: "400px",
                 margin: "auto",
                 width: "100%",
               }}

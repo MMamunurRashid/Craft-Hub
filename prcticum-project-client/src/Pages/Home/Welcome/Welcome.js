@@ -48,7 +48,7 @@ const Welcome = () => {
         <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
         <h1 className="text-3xl font-bold mb-2 font-serif ">Welcome</h1>
         <h1 className="text-3xl font-bold font-serif ">Free Delivery</h1>
-          <p className="text-base text-center">Starting at ৳ 999</p>
+          <p className="text-base text-center">Starting at ৳ 3000</p>
           <Link to='/products'><PrimaryButton>Shop Now</PrimaryButton></Link>
         </div>
       </div>

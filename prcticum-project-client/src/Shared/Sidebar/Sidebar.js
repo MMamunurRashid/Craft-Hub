@@ -7,18 +7,20 @@ import {
   MdReviews,
 } from "react-icons/md";
 import { FaUsersGear } from "react-icons/fa6";
-import { TbMessageReport, TbShoppingBagCheck } from "react-icons/tb";
+import {  TbShoppingBagCheck } from "react-icons/tb";
 import { BsBagCheckFill, BsBagPlusFill } from "react-icons/bs";
 import { FaCartArrowDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
 import useAdmin from "../../hooks/useAdmin";
 import useSeller from "../../hooks/useSeller";
+import useDeliveryMan from "../../hooks/useDeliveryMan";
 
 const SideNavbar = () => {
   const { user } = useContext(AuthContext);
   const [isAdmin] = useAdmin(user.email);
   const [isSeller] = useSeller(user.email);
+  const [isDeliveryMan] = useDeliveryMan(user.email);
   return (
     <div className="">
       <div className="drawer lg:drawer-open mt-16">
@@ -38,6 +40,8 @@ const SideNavbar = () => {
                 <span className="text-xl">Profile</span>
               </Link>
             </li>
+
+            {/* Admin route  */}
             {isAdmin && (
               <>
                 <li>
@@ -68,6 +72,8 @@ const SideNavbar = () => {
 
               </>
             )}
+
+            {/* Seller route  */}
             {isSeller && (
               <>
                 <li>
@@ -96,7 +102,27 @@ const SideNavbar = () => {
                 </li>
               </>
             )}
-            {!isAdmin && !isSeller && (
+
+            {/* Delivery Man route  */}
+            {
+              isDeliveryMan && <>
+              <li>
+                  <Link to="/dashboard/delivery-order">
+                    <TbShoppingBagCheck className="w-5 h-5 md:w-8 md:h-8" />{" "}
+                    <span className="text-xl">Order</span>
+                  </Link>
+                </li>
+              <li>
+                  <Link to="/dashboard/delivery-history">
+                    <MdWorkHistory className="w-5 h-5 md:w-8 md:h-8" />{" "}
+                    <span className="text-xl">History</span>
+                  </Link>
+                </li>
+              </>
+            }
+
+            {/* Buyer route  */}
+            {!isAdmin && !isSeller && !isDeliveryMan && (
               <>
                 <li>
                   <Link to="/dashboard/my-cart">
@@ -114,7 +140,7 @@ const SideNavbar = () => {
                 <li>
                   <Link to="/dashboard/order-history">
                     <MdWorkHistory className="w-5 h-5 md:w-8 md:h-8" />{" "}
-                    <span className="text-xl">Order History</span>
+                    <span className="text-xl">History</span>
                   </Link>
                 </li>
                 <li>

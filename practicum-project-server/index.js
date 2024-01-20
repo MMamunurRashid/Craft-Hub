@@ -119,6 +119,16 @@ async function run() {
       res.send({ isSeller: user?.role === "Seller" });
     });
 
+    // all kind of a delivery man role
+    app.get("/users/delivery-man/:email", async (req, res) => {
+      const email = req.params.email;
+      // console.log(email);
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      // console.log(user.role);
+      res.send({ isDeliveryMan: user?.role === "Delivery Man" });
+    });
+
     //get seller and buyer from admin panel
     app.get("/seller", verifyJWT, verifyAdmin, async (req, res) => {
       const role = "Seller";
@@ -145,6 +155,115 @@ async function run() {
       res.send(result);
     });
 
+    // delivery man 
+    app.get("/delivery-man", async (req, res) => {
+      const user = {role: 'Delivery Man'};
+      const result = await usersCollection.find(user).toArray();
+      res.send(result);
+    });
+
+    // delivery man orders 
+    app.get("/delivery-man-orders/:email", async (req, res) => {
+      const deliveryManEmail = req.params.email;
+  
+      // Find orders with matching deliveryManEmail and sort by deliveryStatus
+      const query = { deliveryManEmail: deliveryManEmail };
+      const orders = await ordersCollection.find(query).sort({ deliveryStatus: 1 }).toArray();
+  
+      // Move orders with deliveryStatus 'complete' to the end
+      const sortedOrders = orders.sort((a, b) => {
+          if (a.deliveryStatus === 'complete' && b.deliveryStatus !== 'complete') {
+              return 1;
+          } else if (a.deliveryStatus !== 'complete' && b.deliveryStatus === 'complete') {
+              return -1;
+          } else {
+              return 0;
+          }
+      });
+  
+      res.send(sortedOrders);
+  });
+  
+
+    // update delivery status by delivery man
+    app.patch("/update-delivery-status/:id", async (req, res) => {
+      const id = req.params.id;
+      const deliveryStatus = req.body.deliveryStatus;
+
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { deliveryStatus: deliveryStatus } };
+  
+      const result = await ordersCollection.updateOne(query, updateData);
+      res.send(result);
+    });
+
+    // cash recived by delivery man
+    app.patch("/update-payment-status/:id", async (req, res) => {
+      const id = req.params.id;
+      const paymentStatus = req.body.paymentStatus;
+
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { paymentStatus: paymentStatus } };
+  
+      const result = await ordersCollection.updateOne(query, updateData);
+      res.send(result);
+    });
+
+    // delivery notes by delivery man
+    app.patch("/delivery-notes/:id", async (req, res) => {
+      const id = req.params.id;
+      const deliveryNotes = req.body.deliveryNotes;
+
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { deliveryNotes: deliveryNotes } };
+  
+      const result = await ordersCollection.updateOne(query, updateData);
+      res.send(result);
+    });
+
+    // product return by customer
+    app.patch("/product-return/:id", async (req, res) => {
+      const id = req.params.id;
+      const returnNotes = req.body.returnNotes;
+
+      // console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const updateData = { $set: { returnNotes: returnNotes } };
+  
+      const result = await ordersCollection.updateOne(query, updateData);
+      res.send(result);
+    });
+
+
+    // user by email
+    app.get("/user-profile", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const result = await usersCollection.findOne({email: email});
+      res.send(result);
+    });
+    // Assuming usersCollection is your MongoDB collection
+
+    app.patch("/users/:id", async (req, res) => {
+      const userId = req.params.id;
+      // const updatedUserData = req.body;
+      const query = { _id: new ObjectId(userId) };
+      const updateData = { $set: { address: req.body.address } };
+
+      try {
+        // Find the user by userId and update their address
+        const result = await usersCollection.updateOne(query, updateData);
+
+        res.send(result)
+      } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).send({ message: "Internal server error" });
+      }
+    });
+
     // Categories
     app.get("/categories", async (req, res) => {
       const query = {};
@@ -157,6 +276,42 @@ async function run() {
       const query = { invisible: { $ne: "invisible" } };
       const result = await productsCollection.find(query).toArray();
       res.send(result);
+    });
+
+    // products fro product slider
+    app.get("/product-slider", async (req, res) => {
+      const query = { invisible: { $ne: "invisible" } };
+      const result = await productsCollection
+        .find(query)
+        .sort({ saleQuantity: -1 }) // Sort by saleQuantity in descending order
+        .limit(9) // Limit the result to the top 8 products
+        .toArray();
+
+      res.send(result);
+    });
+
+    //products
+    app.get("/products-home", async (req, res) => {
+      const query = { invisible: { $ne: "invisible" } };
+      const result = await productsCollection.find(query).limit(8).toArray();
+      res.send(result);
+    });
+
+    // product page with limits
+    app.get("/products-page", async (req, res) => {
+      const limit = parseInt(req.query.limit) || 6;
+      const query = { invisible: { $ne: "invisible" } };
+
+      try {
+        const result = await productsCollection
+          .find(query)
+          .limit(limit)
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).send("Internal Server Error");
+      }
     });
 
     // products by category
@@ -194,6 +349,27 @@ async function run() {
       res.send(result);
     });
 
+    // update product by id
+    app.patch("/quantity-update-product/:id", async (req, res) => {
+      const id = req.params.id;
+      const quantityToAdd = parseInt(req.body.quantity, 10) || 0;
+      console.log(id, quantityToAdd);
+
+      const query = { _id: new ObjectId(id) };
+
+      // Assuming availableQuantity is a field in your document
+      const updateData = { $inc: { availableQuantity: quantityToAdd } };
+
+      try {
+        const result = await productsCollection.updateOne(query, updateData);
+        res.send(result);
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+        res.status(500).send({ error: "Internal Server Error" });
+      }
+    });
+
+    // search product
     app.get("/search-products", async (req, res) => {
       const search = req.query.search;
 
@@ -243,19 +419,20 @@ async function run() {
       try {
         const query = {
           $or: [
-            { "products.sellerEmail": sellerEmail }, // For object scenario
-            { products: { $elemMatch: { sellerEmail: sellerEmail } } }, // For array scenario
+            { "products.sellerEmail": sellerEmail },
+            { products: { $elemMatch: { sellerEmail: sellerEmail } } },
           ],
         };
-
-        const orders = await ordersCollection.find(query).toArray();
+        const sortOrder = { orderDate: -1 };
+        const orders = await ordersCollection
+          .find(query)
+          .sort(sortOrder)
+          .toArray();
 
         const sellerOrders = orders.map((order) => {
           let filteredProducts = [];
 
-          // Check if products is an array or an object
           if (Array.isArray(order.products)) {
-            // If products is an array, filter products by sellerEmail
             filteredProducts = order.products.filter(
               (product) => product.sellerEmail === sellerEmail
             );
@@ -263,12 +440,14 @@ async function run() {
             order.products &&
             order.products.sellerEmail === sellerEmail
           ) {
-            // If products is an object, check if it matches the sellerEmail
             filteredProducts = [order.products];
           }
 
           return { ...order, products: filteredProducts };
         });
+
+        // Sort the sellerOrders array by orderDate in descending order
+        sellerOrders.sort((a, b) => b.orderDate - a.orderDate);
 
         res.send(sellerOrders);
       } catch (err) {
@@ -277,57 +456,7 @@ async function run() {
       }
     });
 
-    // seller report
-    function getDateRange(option) {
-      const currentDate = new Date();
-      const timezone = { timeZone: "Asia/Dhaka" };
-
-      let startOfDate, endOfDate;
-
-      switch (option) {
-        case "Today":
-          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          startOfDate.setHours(0, 0, 0, 0);
-          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          endOfDate.setHours(23, 59, 59, 999);
-          break;
-
-        case "Yesterday":
-          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          startOfDate.setDate(startOfDate.getDate() - 1);
-          startOfDate.setHours(0, 0, 0, 0);
-          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          endOfDate.setDate(endOfDate.getDate() - 1);
-          endOfDate.setHours(23, 59, 59, 999);
-          break;
-
-        case "This Month":
-          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          startOfDate.setDate(1);
-          startOfDate.setHours(0, 0, 0, 0);
-          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          endOfDate.setMonth(endOfDate.getMonth() + 1, 0);
-          endOfDate.setHours(23, 59, 59, 999);
-          break;
-
-        case "Last Month":
-          startOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          startOfDate.setDate(1);
-          startOfDate.setMonth(startOfDate.getMonth() - 1);
-          startOfDate.setHours(0, 0, 0, 0);
-          endOfDate = new Date(currentDate.toLocaleString("en-US", timezone));
-          endOfDate.setDate(0);
-          endOfDate.setHours(23, 59, 59, 999);
-          break;
-
-        default:
-          startOfDate = new Date();
-          endOfDate = new Date();
-      }
-
-      return { startOfDate, endOfDate };
-    }
-
+    // seller sales report
     app.get("/sales-report", verifyJWT, verifySeller, async (req, res) => {
       const sellerEmail = req.query.email;
       const decodedEmail = req.decoded.email;
@@ -336,8 +465,13 @@ async function run() {
         return res.status(403).send("Forbidden Access Request");
       }
 
-      const option = req.query.option;
-      const { startOfDate, endOfDate } = getDateRange(option);
+      const fromDate = req.query.fromDate;
+      const toDate = req.query.toDate;
+
+      // Validate fromDate and toDate here if needed...
+
+      const startOfDate = new Date(fromDate);
+      const endOfDate = new Date(toDate);
 
       const orders = await ordersCollection
         .find({
@@ -351,15 +485,7 @@ async function run() {
         .toArray();
 
       const filteredOrders = orders.filter((order) => {
-        const dateComponents = order.orderDate.split(/\/|, |:| /);
-        const orderDate = new Date(
-          dateComponents[2],
-          parseInt(dateComponents[0]) - 1,
-          dateComponents[1],
-          dateComponents[3],
-          dateComponents[4],
-          dateComponents[5]
-        );
+        const orderDate = new Date(order.orderDate);
         return orderDate >= startOfDate && orderDate <= endOfDate;
       });
 
@@ -383,12 +509,80 @@ async function run() {
 
     // buyer order
     // Orders
+    // app.post("/orders", async (req, res) => {
+    //   const query = req.body;
+    //   const result = await ordersCollection.insertOne(query);
+    //   res.send(result);
+    // });
+
     app.post("/orders", async (req, res) => {
       const query = req.body;
-      const result = await ordersCollection.insertOne(query);
+
+      try {
+        // Check if products is an array
+        if (Array.isArray(query.products)) {
+          // Update products in productsCollection for each product in the array
+          for (const product of query.products) {
+            const productId = new ObjectId(product._id);
+
+            // Increase sale quantity and decrease available quantity
+            const result = await productsCollection.updateOne(
+              { _id: productId },
+              {
+                $inc: {
+                  // saleQuantity: 1,
+                  // availableQuantity: -1,
+                  saleQuantity: product.quantity,
+                  availableQuantity: -product.quantity,
+                },
+              }
+            );
+
+            console.log(
+              `Matched ${result.matchedCount} document(s) and modified ${result.modifiedCount} document(s)`
+            );
+          }
+        } else if (typeof query.products === "object") {
+          // Update products in productsCollection for a single product
+          const productId = new ObjectId(query.products._id);
+
+          // Increase sale quantity and decrease available quantity
+          const result = await productsCollection.updateOne(
+            { _id: productId },
+            {
+              $inc: {
+                // saleQuantity: 1,
+                // availableQuantity: -1,
+                saleQuantity: query.products.quantity,
+                availableQuantity: -query.products.quantity,
+              },
+            }
+          );
+
+          console.log(
+            `Matched ${result.matchedCount} document(s) and modified ${result.modifiedCount} document(s)`
+          );
+        } else {
+          throw new Error("Products should be an array or a single object.");
+        }
+
+        const result = await ordersCollection.insertOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error });
+        return;
+      } finally {
+      }
+    });
+    // get order by id
+    // product by id
+    app.get("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await ordersCollection.findOne(query);
       res.send(result);
     });
-
     // online payment order
     // Orders with payment
     app.post("/orders-payment", async (req, res) => {
@@ -418,8 +612,8 @@ async function run() {
         product_category: "craft",
         product_profile: "general",
         cus_name: order.userName,
-        cus_email: order.orderEmail,
-        cus_add1: order.location,
+        cus_email: order.userEmail,
+        cus_add1: order.location.district,
         shipping_method: "No",
         cus_country: "Bangladesh",
         cus_phone: order.phoneNumber,
@@ -432,10 +626,11 @@ async function run() {
         ordersCollection.insertOne({
           ...order,
           transactionId,
+          paymentdata: data,
           paymentStatus: false,
         });
-        res.send([ url= GatewayPageURL ]);
-        console.log(" : ", apiResponse);
+        res.send([(url = GatewayPageURL)]);
+        // console.log(" : ", apiResponse);
       });
 
       // const result = await orderCollection.insertOne(query);
@@ -451,7 +646,7 @@ async function run() {
 
       const result = await ordersCollection.updateOne(
         { transactionId },
-        { $set: { paymentStatus:true, paidAt: new Date() } }
+        { $set: { paymentStatus: true, paidAt: new Date() } }
       );
 
       if (result.modifiedCount > 0) {
@@ -470,15 +665,20 @@ async function run() {
       }
     });
 
-    // update delivery status by seller
-    app.patch("/orders/:id", async (req, res) => {
+    // assign delivery man by seller
+    app.patch("/assign-delivery-man/:id", async (req, res) => {
       const id = req.params.id;
+      const deliveryManEmail = req.body.deliveryManEmail;
+      const deliveryStatus = req.body.deliveryStatus;
+
       // console.log(id);
       const query = { _id: new ObjectId(id) };
-      const updateData = { $set: { deliveryStatus: req.body.deliveryStatus } };
+      const updateData = { $set: { deliveryStatus: deliveryStatus, deliveryManEmail } };
+  
       const result = await ordersCollection.updateOne(query, updateData);
       res.send(result);
     });
+
     // for update payment by seller
     app.patch("/order-payment/:id", async (req, res) => {
       const id = req.params.id;
@@ -492,14 +692,23 @@ async function run() {
     // my order
     app.get("/my-order", verifyJWT, async (req, res) => {
       const email = req.query.email;
-      // console.log(req.query);
       const decodedEmail = req.decoded.email;
+
       if (email !== decodedEmail) {
         return res.status(403).send("Forbidden Access Request");
       }
+
       const query = { userEmail: email };
-      const product = await ordersCollection.find(query).toArray();
-      res.send(product);
+
+      // Sort the results based on orderDate in descending order
+      const sortOrder = { orderDate: -1 };
+
+      const products = await ordersCollection
+        .find(query)
+        .sort(sortOrder)
+        .toArray();
+
+      res.send(products);
     });
 
     // // orders for seller
@@ -527,6 +736,7 @@ async function run() {
     // });
 
     // sales report for admin
+    // sales report for admin
     app.get("/sales-report-admin", verifyJWT, verifyAdmin, async (req, res) => {
       const sellerEmail = req.query.email;
       const decodedEmail = req.decoded.email;
@@ -535,8 +745,13 @@ async function run() {
         return res.status(403).send("Forbidden Access Request");
       }
 
-      const option = req.query.option;
-      const { startOfDate, endOfDate } = getDateRange(option);
+      const fromDate = req.query.fromDate;
+      const toDate = req.query.toDate;
+
+      // Validate fromDate and toDate here if needed...
+
+      const startOfDate = new Date(fromDate);
+      const endOfDate = new Date(toDate);
 
       const orders = await ordersCollection
         .find({
@@ -546,29 +761,22 @@ async function run() {
         .toArray();
 
       const filteredOrders = orders.filter((order) => {
-        const dateComponents = order.orderDate.split(/\/|, |:| /);
-        const orderDate = new Date(
-          dateComponents[2],
-          parseInt(dateComponents[0]) - 1,
-          dateComponents[1],
-          dateComponents[3],
-          dateComponents[4],
-          dateComponents[5]
-        );
+        const orderDate = new Date(order.orderDate);
         return orderDate >= startOfDate && orderDate <= endOfDate;
       });
+
       res.send(filteredOrders);
     });
 
-    // review 
+    // review
     app.post("/review", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
-     // review by product id
-     app.get("/review/:id", async (req, res) => {
+    // review by product id
+    app.get("/review/:id", async (req, res) => {
       const id = req.params.id;
       const query = { productId: id };
       const result = await reviewCollection.find(query).toArray();
@@ -578,19 +786,26 @@ async function run() {
     app.get("/my-reviews", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const decodedEmail = req.decoded.email;
-    
+
       if (email !== decodedEmail) {
         return res.status(403).send("Forbidden Access Request");
       }
-    
+      const sortReview = { reviewTime: -1 };
       try {
-        const userReviews = await reviewCollection.find({ userEmail: email }).toArray();
-    
-        const reviewDetails = await Promise.all(userReviews.map(async (review) => {
-          const productInfo = await productsCollection.findOne({ _id: new ObjectId(review.productId) });
-          return { review, productInfo };
-        }));
-    
+        const userReviews = await reviewCollection
+          .find({ userEmail: email })
+          .sort(sortReview)
+          .toArray();
+
+        const reviewDetails = await Promise.all(
+          userReviews.map(async (review) => {
+            const productInfo = await productsCollection.findOne({
+              _id: new ObjectId(review.productId),
+            });
+            return { review, productInfo };
+          })
+        );
+
         res.json(reviewDetails);
       } catch (error) {
         res.status(500).json({ error: error.message });

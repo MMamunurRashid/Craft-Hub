@@ -18,6 +18,12 @@ const Login = () => {
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   if (token) {
     navigate(from, { replace: true });
   }
@@ -75,27 +81,35 @@ const Login = () => {
               <p className="text-red-600">{errors.email?.message}</p>
             )}
           </div>
-            <div className="form-control md:w-[500px]">
-              <label className="label">
-                {" "}
-                <span className="label-text">Password</span>
-              </label>
-              <input
-                placeholder="Enter your password here"
-                type="password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be 6 characters or longer",
-                  },
-                })}
-                className="input input-bordered input-xl md:w-[500px] "
-              />{" "}
-              {errors.password && (
-                <p className="text-red-600">{errors.password?.message}</p>
-              )}
-            </div>
+          <div className="form-control md:w-[500px] relative">
+      <label className="label">
+        <span className="label-text">Password</span>
+      </label>
+      <div className="relative">
+        <input
+          placeholder="Enter your password here"
+          type={showPassword ? 'text' : 'password'}
+          {...register('password', {
+            required: 'Password is required',
+            minLength: {
+              value: 6,
+              message: 'Password must be 6 characters or longer',
+            },
+          })}
+          className="input input-bordered input-xl md:w-[500px]"
+        />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute top-1/2 right-2 transform -translate-y-1/2 text-blue-500"
+        >
+          {showPassword ? 'Hide' : 'Show'}
+        </button>
+      </div>
+      {errors.password && (
+        <p className="text-red-600">{errors.password?.message}</p>
+      )}
+    </div>
             <div className="mt-5 w-1/2 m-auto">
               <input
                 className="btn btn-primary w-full"

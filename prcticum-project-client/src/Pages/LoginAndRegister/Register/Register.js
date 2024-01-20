@@ -110,6 +110,18 @@ const Register = () => {
       });
   };
 
+
+  // show password 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRetypePassword, setShowRetypePassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleRetypePasswordVisibility = () => {
+    setShowRetypePassword(!showRetypePassword);
+  };
   return (
     <div className="py-10 min-h-screen">
       <div className="flex">
@@ -132,6 +144,7 @@ const Register = () => {
                 >
                   <option selected>Buyer</option>
                   <option>Seller</option>
+                  <option>Delivery Man</option>
                 </select>
                 {errors.option && (
                   <span className="text-red-500">
@@ -194,48 +207,65 @@ const Register = () => {
                   className="input input-bordered md:w-[500px] "
                 />
               </div>
-              <div className="form-control md:w-[500px] ">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="Enter a password 6 character have number and special characters "
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 6,
-                      message: "Password must be 6 characters or longer",
-                    },
-                    pattern: {
-                      value: /(?=.*[!@#$&*])(?=.*[0-9])/,
-                      message:
-                        "Password must have number and special characters",
-                    },
-                  })}
-                  required
-                  className="input input-bordered md:w-[500px] "
-                />
-              </div>
-              <div className="form-control md:w-[500px] ">
-                <label className="label">
-                  <span className="label-text">Retype your Password</span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="Retype your password"
-                  {...register("retypePassword", {
-                    required: true,
-                  })}
-                  required
-                  className="input input-bordered md:w-[500px] "
-                />
-                {errors.retypePassword && (
-                  <span className="text-red-500">
-                    {errors.retypePassword.message}
-                  </span>
-                )}
-              </div>
+              <div className="form-control md:w-[500px] relative">
+        <label className="label">
+          <span className="label-text">Password</span>
+        </label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Enter a password 6 characters or longer"
+            {...register('password', {
+              required: 'Password is required',
+              minLength: {
+                value: 6,
+                message: 'Password must be 6 characters or longer',
+              },
+              pattern: {
+                value: /(?=.*[!@#$&*])(?=.*[0-9])/,
+                message: 'Password must have numbers and special characters',
+              },
+            })}
+            required
+            className="input input-bordered md:w-[500px]"
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 text-blue-500"
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
+      </div>
+      <div className="form-control md:w-[500px] relative">
+        <label className="label">
+          <span className="label-text">Retype your Password</span>
+        </label>
+        <div className="relative">
+          <input
+            type={showRetypePassword ? 'text' : 'password'}
+            placeholder="Retype your password"
+            {...register('retypePassword', {
+              required: 'Retype Password is required',
+            })}
+            required
+            className="input input-bordered md:w-[500px]"
+          />
+          <button
+            type="button"
+            onClick={toggleRetypePasswordVisibility}
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 text-blue-500"
+          >
+            {showRetypePassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
+        {errors.retypePassword && (
+          <span className="text-red-500">
+            {errors.retypePassword.message}
+          </span>
+        )}
+      </div>
               
             </div>
 

@@ -36,24 +36,25 @@ const Category = () => {
                 
                 className="card shadow-lg rounded-lg w-full h-full  "
               >
+                    <Link to={`/category/${category.name}`}>
                 <div className="relative">
                   <div className="">
                     <img
                       src={category.image}
                       alt={""}
-                      className="w-full h-64 rounded-lg "
+                      className="w-full h-64  rounded-t-lg"
                     />
 
                     {/* image  hover view button */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 bg-opacity-60 hover:opacity-100 transition-opacity duration-700">
-                      <Link to={`/category/${category.name}`}>
+                    {/* <div className="absolute inset-0 flex items-center justify-center opacity-0 bg-opacity-60 hover:opacity-100 transition-opacity duration-700">
                         <button className="bg-slate-300 hover:bg-orange-500 hover:text-slate-200 text-gray-800 font-bold py-2 px-4 rounded shadow">
                           {category.name}
                         </button>
-                      </Link>
-                    </div>
+                      </div> */}
+                      <p className="text-xl text-center">{category.name}</p>
                   </div>
                 </div>
+                      </Link>
               </div>
             </div>
           ))

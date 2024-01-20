@@ -12,20 +12,29 @@ export const CartProvider = ({ children }) => {
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
-  }, []); // The empty dependency array ensures this effect runs once on mount
+  }, []); 
 
   const addToCart = (product) => {
+    // Check if the product is already in the cart
+    const isProductInCart = cart.some((item) => item._id === product._id);
+
+    if (isProductInCart) {
+      toast.error('Product is already in the cart');
+      return;
+    }
+
+    // If not in cart, update the cart
     const updatedCart = [...cart, product];
     setCart(updatedCart);
-    toast.success('Product Added into Cart')
+    toast.success('Product Added into Cart');
 
     // Save the updated cart to localStorage
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
   const clearCart = () => {
-    setCart([]); // Clear the cart in state
-    localStorage.removeItem('cart'); // Remove cart data from localStorage
+    setCart([]); 
+    localStorage.removeItem('cart'); 
   };
 
   return (

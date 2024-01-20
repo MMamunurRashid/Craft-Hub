@@ -18,7 +18,7 @@ const OurPolicy = () => {
             </div>
             <div className="ml-5">
               <h1 className="text-xl font-semibold">Free Delivery</h1>
-              <p>For all orders over  <span className="text-xl">৳ </span>999</p>
+              <p>For all orders over  <span className="text-xl">৳ </span>3000</p>
             </div>
           </div>
           <div className="divider divider-horizontal"></div> 

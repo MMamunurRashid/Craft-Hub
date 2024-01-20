@@ -1,11 +1,24 @@
 import React, { useState } from "react";
-import { BsCartPlus, BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
+import {
+  BsCartPlus,
+  BsFillCartCheckFill,
+  BsStar,
+  BsStarFill,
+  BsStarHalf,
+} from "react-icons/bs";
 import { MdPreview } from "react-icons/md";
 import { useCart } from "../../../Contexts/CartContext";
-import Product from "../Product/Product";
+import { Link } from "react-router-dom";
 
 const ProductCard = ({ product, handleProductInfo }) => {
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
+  const isProductInCart = cart.some((item) => item._id === product._id);
+
+  const handleClick = () => {
+    if (!isProductInCart) {
+      addToCart(product);
+    }
+  };
 
   // Function to generate star icons based on the rating
   const renderStars = (rating) => {
@@ -29,61 +42,72 @@ const ProductCard = ({ product, handleProductInfo }) => {
   };
 
   return (
-    <div className="ml-5 rounded-[10px] text-center  hover:border-orange-500 border-stone-100 border-[3px]  ">
-      <div className=" relative">
-        {/* image  hover view button */}
-        <div className="absolute inset-0 flex gap-3 items-center justify-center opacity-0 bg-opacity-60 hover:opacity-100 transition-opacity duration-300">
-          {/* Add to cart  */}
-
-          <button
-            onClick={() => addToCart(product)}
-            data-tip="Add To Cart"
-            className="bg-slate-300 hover:text-white hover:bg-orange-500 tooltip  flex-col justify-center items-center text-gray-800 font-bold py-2 px-4 rounded shadow"
-          >
-            <BsCartPlus className="w-8 h-8 hover:text-white " />
-          </button>
-
-          {/* View*/}
-
-          <label
-            data-tip="Quick View"
-            htmlFor="my_modal_6"
-            onClick={() => {
-              handleProductInfo(product);
-            }}
-            className="hover:cursor-pointer bg-slate-300 hover:text-white hover:bg-orange-500 tooltip  flex-col justify-center items-center text-gray-800 font-bold py-2 px-4 rounded shadow"
-          >
-            <MdPreview className="w-8 h-8  " />
-          </label>
-        </div>
+    <div className="ml-5 rounded-[10px]   hover:border-orange-500 border-stone-100 border-[3px]  ">
+      <div className=" ">
         <div className="">
+          <Link to={`/product-details/${product._id}`}>
           <img
             src={product.productImage}
             alt={""}
             className=" w-full h-[300px] rounded-t-lg"
           />
-          <div className="flex items-center justify-center gap-3">
-            <p className="flex text-orange-500">
-              {" "}
-              {renderStars(product.rating)}{" "}
-            </p>
-            <p>{product.rating}</p>
+          </Link>
+          <div className=" flex gap-3 items-center justify-center opacity-100 mt-1 bg-opacity-60 hover:opacity-100 transition-opacity duration-300">
+            {/* Add to cart  */}
+
+            <button
+              onClick={handleClick}
+              data-tip={isProductInCart ? "Already in Cart" : "Add To Cart"}
+              className={`bg-slate-300 hover:text-white hover:bg-orange-500 tooltip  flex-col justify-center items-center text-gray-800 font-bold py-2 px-4 rounded shadow ${
+                isProductInCart ? "cursor-not-allowed" : ""
+              }`}
+              disabled={isProductInCart} // Disable the button if the product is already in the cart
+            >
+              {isProductInCart ? (
+                <BsFillCartCheckFill className="w-8 h-8 text-green-500" />
+              ) : (
+                <BsCartPlus className="w-8 h-8 hover:text-white" />
+              )}
+            </button>
+
+            {/* View*/}
+
+            <label
+              data-tip="Quick View"
+              htmlFor="my_modal_6"
+              onClick={() => {
+                handleProductInfo(product);
+              }}
+              className="hover:cursor-pointer bg-slate-300 hover:text-white hover:bg-orange-500 tooltip  flex-col justify-center items-center text-gray-800 font-bold py-2 px-4 rounded shadow"
+            >
+              <MdPreview className="w-8 h-8  " />
+            </label>
           </div>
-          <p
-            className={`text-xl font-semibold my-3 ${
-              product.availableQuantity === 0
-                ? "text-red-600"
-                : "text-green-600"
-            }`}
-          >
-            {product.availableQuantity === 0 ? "Out of Stock" : "In Stock"}
-          </p>
-          <h1 className="text-center text-xl font-serif">
+          <div className="pl-2 pt-1">
+          <h1 className=" text-[18px] font-serif">
             {product.productName}
           </h1>
-        </div>
-        <div className="absolute top-6 text-2xl bg-slate-100 p-3">
-          <p>৳ {product.productPrice}</p>
+          <div className="  bg-slate-100 ">
+            <p className="text-[22px] text-green-600">৳ {product.productPrice}</p>
+            <div className="flex items-center  gap-3 text-[15px]">
+              <p className="flex text-orange-500 ">
+                {" "}
+                {renderStars(product.rating)}{" "}
+              </p>
+              <p className="">{product.rating}</p>
+            </div>
+            <p
+              className={`text-[15px] font-semibold my-1  ${
+                product.availableQuantity === 0
+                  ? "text-red-600"
+                  : "text-green-600"
+              }`}
+            >
+              {product.availableQuantity === 0 ? "Out of Stock" : "In Stock"}
+            </p>
+          </div>
+          </div>
+          
         </div>
       </div>
     </div>

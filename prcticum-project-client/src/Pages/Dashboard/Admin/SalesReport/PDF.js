@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDF = ({ option, salesData }) => {
+const PDF = ({ fromDate, toDate, salesData }) => {
   Font.register({
     family: "Times-Roman",
     fonts: [
@@ -60,7 +60,7 @@ const PDF = ({ option, salesData }) => {
   let totalProducts = 0;
   salesData.forEach((data) => {
     totalAmount += data.totalPrice;
-  
+
     if (Array.isArray(data.products)) {
       totalProducts += data.products.length;
     } else if (data.products && typeof data.products === 'object') {
@@ -80,9 +80,8 @@ const PDF = ({ option, salesData }) => {
     productChunks.push(productList.slice(i, i + chunkSize));
   }
 
-
   const date = new Date();
-  const options = { timeZone: "Asia/Dhaka" }; 
+  const options = { timeZone: "Asia/Dhaka" };
 
   const localTime = date.toLocaleString("en-US", options);
   return (
@@ -92,9 +91,13 @@ const PDF = ({ option, salesData }) => {
           <Text style={styles.title}>Sales Report</Text>
           <Text style={styles.text}>Print Time: {localTime}</Text>
 
-          <Text style={styles.text}>You requested for {option} sales report</Text>
+          <Text style={styles.text}>
+            You requested for {fromDate} to {toDate} sales report
+          </Text>
           <Text style={styles.text}>Total Sell Products: {totalProducts}</Text>
-          <Text style={styles.text}>Total amount of sell: {roundedTotalAmount} BDT</Text>
+          <Text style={styles.text}>
+            Total amount of sell: {roundedTotalAmount} BDT
+          </Text>
           <Text style={styles.text}>Product List:</Text>
           <View style={styles.productList}>
             {chunk.map((product, index) => (
@@ -103,10 +106,16 @@ const PDF = ({ option, salesData }) => {
               </Text>
             ))}
           </View>
-          <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+          <Text
+            style={styles.pageNumber}
+            render={({ pageNumber, totalPages }) =>
+              `${pageNumber} / ${totalPages}`
+            }
+          />
         </Page>
       ))}
     </Document>
   );
 };
+
 export default PDF;
