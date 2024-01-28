@@ -112,12 +112,12 @@ const SideNavbar = () => {
                     <span className="text-xl">Order</span>
                   </Link>
                 </li>
-              <li>
+              {/* <li>
                   <Link to="/dashboard/delivery-history">
                     <MdWorkHistory className="w-5 h-5 md:w-8 md:h-8" />{" "}
                     <span className="text-xl">History</span>
                   </Link>
-                </li>
+                </li> */}
               </>
             }
 

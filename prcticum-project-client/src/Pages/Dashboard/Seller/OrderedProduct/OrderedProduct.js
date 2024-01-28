@@ -15,7 +15,7 @@ const OrderedProduct = () => {
     queryKey: ["orders", user?.email],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/product-order?email=${user?.email}`,
+        `https://craft-hub-mamun.vercel.app/product-order?email=${user?.email}`,
         {
           headers: {
             authorization: `bearer ${localStorage.getItem("accessToken")}`,
@@ -65,7 +65,7 @@ const OrderedProduct = () => {
   };
   useEffect(() => {
     if (productId) {
-      fetch(`http://localhost:5000/product/${productId}`)
+      fetch(`https://craft-hub-mamun.vercel.app/product/${productId}`)
         .then((res) => res.json())
         .then((data) => {
           setProduct(data);
@@ -76,7 +76,7 @@ const OrderedProduct = () => {
   const [deliveryManData, setDeliveryManData] = useState([]);
   useEffect(() => {
     
-      fetch(`http://localhost:5000/delivery-man`)
+      fetch(`https://craft-hub-mamun.vercel.app/delivery-man`)
         .then((res) => res.json())
         .then((data) => {
           setDeliveryManData(data);
@@ -94,7 +94,7 @@ const OrderedProduct = () => {
         "Are you sure you want to Assign This Delivery Man for this order?"
       )
     ) {
-      fetch(`http://localhost:5000/assign-delivery-man/${orderId}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/assign-delivery-man/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

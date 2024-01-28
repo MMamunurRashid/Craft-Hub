@@ -15,7 +15,7 @@ const MyReview = () => {
     queryKey: ["reviews", user?.email],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/my-reviews?email=${user?.email}`,
+        `https://craft-hub-mamun.vercel.app/my-reviews?email=${user?.email}`,
         {
           headers: {
             authorization: `bearer ${localStorage.getItem("accessToken")}`,

@@ -51,7 +51,7 @@ const OrderModal = ({
     };
 
     if (event.nativeEvent.submitter.value === "Cash On Delivery") {
-      fetch("http://localhost:5000/orders", {
+      fetch("https://craft-hub-mamun.vercel.app/orders", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -85,7 +85,7 @@ const OrderModal = ({
       console.log("Cash On Delivery clicked");
       // You can handle the action specific to this button here
     } else if (event.nativeEvent.submitter.value === "Submit With Payment") {
-      fetch("http://localhost:5000/orders-payment", {
+      fetch("https://craft-hub-mamun.vercel.app/orders-payment", {
         method: "POST",
         headers: {
           "content-type": "application/json",

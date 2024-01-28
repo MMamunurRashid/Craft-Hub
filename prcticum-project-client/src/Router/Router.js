@@ -62,7 +62,7 @@ const router = createBrowserRouter([
         element: <ShopByCategory/>,
         loader: ({ params }) =>
           fetch(
-            `http://localhost:5000/category/${params.id}`
+            `https://craft-hub-mamun.vercel.app/category/${params.id}`
           ),
       },
       {
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         element: <ProductDetails/>,
         loader: ({ params }) =>
           fetch(
-            `http://localhost:5000/product/${params.id}`
+            `https://craft-hub-mamun.vercel.app/product/${params.id}`
           ),
       },
 

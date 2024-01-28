@@ -27,7 +27,7 @@ const Profile = () => {
     queryKey: ["users", user.email],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/user-profile?email=${user.email}`
+        `https://craft-hub-mamun.vercel.app/user-profile?email=${user.email}`
       );
       const data = await res.json();
       // console.log(data);
@@ -98,7 +98,7 @@ const Profile = () => {
       post: post,
       district: district,
     };
-    fetch(`http://localhost:5000/users/${users._id}`, {
+    fetch(`https://craft-hub-mamun.vercel.app/users/${users._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

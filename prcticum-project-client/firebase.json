@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "craft-hub",
     "public": "build",
     "ignore": [
       "firebase.json",

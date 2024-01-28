@@ -12,7 +12,7 @@ const Products = () => {
   const [loading, setIsLoading] = useState(true);
   useEffect(() => {
     setIsLoading(true); // Set loading state to true
-    fetch(`http://localhost:5000/products-home`)
+    fetch(`https://craft-hub-mamun.vercel.app/products-home`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

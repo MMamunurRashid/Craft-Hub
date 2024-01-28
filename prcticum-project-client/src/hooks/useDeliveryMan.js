@@ -5,7 +5,7 @@ const useDeliveryMan = (email) => {
   const [isDeliveryManLoading, setIsDeliveryManLoading] = useState(true);
   useEffect(() => {
     if (email) {
-      fetch(`http://localhost:5000/users/delivery-man/${email}`)
+      fetch(`https://craft-hub-mamun.vercel.app/users/delivery-man/${email}`)
         .then((res) => res.json())
         .then((data) => {
           //console.log(data);

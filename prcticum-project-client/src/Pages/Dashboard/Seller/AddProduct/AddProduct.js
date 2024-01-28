@@ -21,7 +21,7 @@ const AddProduct = () => {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/categories");
+      const res = await fetch("https://craft-hub-mamun.vercel.app/categories");
       const data = await res.json();
       console.log(data);
       return data;
@@ -62,7 +62,7 @@ const AddProduct = () => {
           };
           console.log(product);
           // save  information to the database
-          fetch("http://localhost:5000/product", {
+          fetch("https://craft-hub-mamun.vercel.app/product", {
             method: "POST",
             headers: {
               "content-type": "application/json",

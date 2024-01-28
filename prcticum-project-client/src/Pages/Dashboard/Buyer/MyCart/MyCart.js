@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { MdDeleteForever } from "react-icons/md";
-import { TbShoppingBagCheck } from "react-icons/tb";
 import OrderModal from "./OrderModal";
 
 const MyCart = () => {
@@ -85,7 +84,7 @@ const MyCart = () => {
 
   useEffect(() => {
     if (productId) {
-      fetch(`http://localhost:5000/product/${productId}`)
+      fetch(`https://craft-hub-mamun.vercel.app/product/${productId}`)
         .then((res) => res.json())
         .then((data) => {
           setProduct(data);
@@ -186,9 +185,9 @@ const MyCart = () => {
                         {product.productName}
                       </td>
                       <td>{product.productPrice}</td>
-                      <td>
+                       <td>
                         <div className="flex items-center gap-2">
-                          <button
+                        <button
                             onClick={() =>
                               handleQuantityChange(
                                 product._id,
@@ -200,7 +199,19 @@ const MyCart = () => {
                           >
                             -
                           </button>
-                          <span>{quantityMap[product._id]}</span>
+                          <input
+                            type="number"
+                            value={quantityMap[product._id]}
+                            min="1"
+                            max={product.availableQuantity}
+                            onChange={(e) =>
+                              handleQuantityChange(
+                                product._id,
+                                parseInt(e.target.value, 10)
+                              )
+                            }
+                            className="input input-bordered"
+                          />
                           <button
                             onClick={() =>
                               handleQuantityChange(
@@ -216,6 +227,7 @@ const MyCart = () => {
                           >
                             +
                           </button>
+                          
                         </div>
                       </td>
 

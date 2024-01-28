@@ -67,7 +67,7 @@ const ProductDetails = () => {
   } = useQuery({
     queryKey: ["reviews", product?._id],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/review/${product?._id}`);
+      const res = await fetch(`https://craft-hub-mamun.vercel.app/review/${product?._id}`);
       const data = await res.json();
       console.log(data);
       return data;

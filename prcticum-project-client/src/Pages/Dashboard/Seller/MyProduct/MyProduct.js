@@ -25,7 +25,7 @@ const MyProduct = () => {
     queryKey: ["products", user?.email],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/my-product?email=${user?.email}`,
+        `https://craft-hub-mamun.vercel.app/my-product?email=${user?.email}`,
         {
           headers: {
             authorization: `bearer ${localStorage.getItem("accessToken")}`,
@@ -49,7 +49,7 @@ const MyProduct = () => {
   };
   useEffect(() => {
     if (productId) {
-      fetch(`http://localhost:5000/product/${productId}`)
+      fetch(`https://craft-hub-mamun.vercel.app/product/${productId}`)
         .then((res) => res.json())
         .then((data) => {
           setProduct(data);
@@ -84,7 +84,7 @@ const MyProduct = () => {
         "Are you sure you want to INVISIBLE this product? If you Invisible this product then this product can't be show any where"
       )
     ) {
-      fetch(`http://localhost:5000/updateProduct/${id}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/updateProduct/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const MyProduct = () => {
         "Are you sure you want to Visible this product? If you Visible this product then this product  be show  everywhere"
       )
     ) {
-      fetch(`http://localhost:5000/updateProduct/${id}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/updateProduct/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -158,7 +158,7 @@ const MyProduct = () => {
         "Are you sure you want to INVISIBLE this product? If you Invisible this product then this product can't be show any where"
       )
     ) {
-      fetch(`http://localhost:5000/quantity-update-product/${updateQuantityProductId}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/quantity-update-product/${updateQuantityProductId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

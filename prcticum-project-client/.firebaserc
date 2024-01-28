@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "craft-hub-1",
-    "no": "craft-hub-1"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "collab-2fb4c"
+  }
 }

@@ -13,7 +13,7 @@ const AllBuyer = () => {
       } = useQuery({
         queryKey: ["buyer"],
         queryFn: async () => {
-          const res = await fetch("http://localhost:5000/buyer", {
+          const res = await fetch("https://craft-hub-mamun.vercel.app/buyer", {
             headers: {
               authorization: `bearer ${localStorage.getItem("accessToken")}`,
             },
@@ -66,7 +66,7 @@ const AllBuyer = () => {
                 <td>{buyer.email}</td>
                 <td>{buyer.mobileNumber}</td>
                 <td>
-                  <Link className='tooltip' data-tip="Give a Mail" >
+                  <Link className='tooltip' data-tip="Give a Mail" to={`mailto:${buyer.email}`} >
                     <RiMailAddLine className="w-7 h-7 text-yellow-500"/>
                   </Link>
                 </td>

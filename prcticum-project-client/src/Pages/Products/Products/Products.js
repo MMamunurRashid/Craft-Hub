@@ -33,7 +33,7 @@ const Products = () => {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/categories`);
+      const res = await fetch(`https://craft-hub-mamun.vercel.app/categories`);
       const data = await res.json();
       // console.log(data);
       return data;
@@ -42,7 +42,7 @@ const Products = () => {
 
   useEffect(() => {
     setIsLoading(true); // Set loading state to true
-    fetch(`http://localhost:5000/products-page?limit=${displayLimit}`)
+    fetch(`https://craft-hub-mamun.vercel.app/products-page?limit=${displayLimit}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

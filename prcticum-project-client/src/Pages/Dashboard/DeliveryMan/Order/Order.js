@@ -17,7 +17,7 @@ const Order = () => {
     queryKey: ["orders", user?.email],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/delivery-man-orders/${user?.email}`
+        `https://craft-hub-mamun.vercel.app/delivery-man-orders/${user?.email}`
       );
       const data = await res.json();
       return data;
@@ -33,7 +33,7 @@ const Order = () => {
           "Are you sure you want to Product Take by Delivery Man and way to deliver for this order?"
         )
       ) {
-        fetch(`http://localhost:5000/update-delivery-status/${orderId}`, {
+        fetch(`https://craft-hub-mamun.vercel.app/update-delivery-status/${orderId}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Order = () => {
           "Are you sure you want to Complete Delivery for this order?"
         )
       ) {
-        fetch(`http://localhost:5000/update-delivery-status/${orderId}`, {
+        fetch(`https://craft-hub-mamun.vercel.app/update-delivery-status/${orderId}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const Order = () => {
         "Are you sure you want to give a Delivery Note for this order?"
       )
     ) {
-      fetch(`http://localhost:5000/delivery-notes/${selectedOrder._id}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/delivery-notes/${selectedOrder._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +137,7 @@ const Order = () => {
     console.log(`Cash received for order ${orderId}`);
 
     if (window.confirm("Are you sure you Received The Cash for this order?")) {
-      fetch(`http://localhost:5000/update-payment-status/${orderId}`, {
+      fetch(`https://craft-hub-mamun.vercel.app/update-payment-status/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -189,7 +189,7 @@ const Order = () => {
               <td className="py-2 px-4 border-b">
                 {order.orderDate.split(",")[0]}
               </td>
-              <td className="py-2 px-4 border-b">${order.totalPrice}</td>
+              <td className="py-2 px-4 border-b">৳{order.totalPrice}</td>
               <td className="py-2 px-4 border-b">
                 {order?.paymentStatus === true ? "Paid" : "COD"}
               </td>
@@ -219,14 +219,14 @@ const Order = () => {
                   <ul>
                     {order.products.map((product) => (
                       <li key={product._id} className="mb-2">
-                        {product.productName} - ${product.productPrice} - X{" "}
+                        {product.productName} - ৳{product.productPrice} - X{" "}
                         {product.quantity}
                       </li>
                     ))}
                   </ul>
                 ) : (
                   <p>
-                    {order.products.productName} - $
+                    {order.products.productName} - ৳
                     {order.products.productPrice} - X {order.products.quantity}
                   </p>
                 )}
